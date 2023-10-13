@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: enterprise-server
+    app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 4 }}
+data:
+{{- if .Values.database.url }}
+  BSEE_ADMIN_REPOSITORY_URL: {{ .Values.database.url }}
+  BSEE_AGENT_REPOSITORY_URL: {{ .Values.database.url }}
+{{- end }}
+{{- if .Values.database.idleTimeout }}
+  BSEE_DB_CONNECTION_IDLE_TIMEOUT: {{ .Values.database.idleTimeout | quote }}
+{{- end }}
+{{- if .Values.database.maxLifetimeTimeout }}
+  BSEE_DB_CONNECTION_MAX_LIFETIME_TIMEOUT: {{ .Values.database.maxLifetimeTimeout | quote }}
+{{- end }}
+  BSEE_HTTPS_KEYSTORE_LOCATION: /home/burpsuite/keystores/es.keystore
+  BSEE_HTTPS_PORT: "8072"
+  BSEE_LINUX_PREFS_STORE_PATH: /home/burpsuite/prefs
+  BSEE_DATA_PATH: /home/burpsuite/data
+  BSEE_BURP_DOWNLOAD_PATH: /home/burpsuite/burp
+  BSEE_LOGS_DIRECTORY: /home/burpsuite/logs
+  BSEE_SCAN_JOB_TEMPLATE: |-
+{{ include "scan-job-template" . | b64enc | indent 16}}
+  BSEE_CONNECTION_CHECK_JOB_TEMPLATE: |-
+{{ include "connection-check-job-template" . | b64enc | indent 16}}

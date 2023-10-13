@@ -1,0 +1,58 @@
+name: Check with Kics and release if successful
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "charts/**"
+
+jobs:
+  kics-job:
+    runs-on: ubuntu-latest
+    name: kics-github-action
+    steps:
+      - name: 'Checkout Helm chart'
+        uses: actions/checkout@v4
+      - name: 'Make reports directory'
+        run: mkdir -p reports
+      - id: kics
+        name: 'KICS Github Action'
+        uses: checkmarx/kics-github-action@v1.7.0
+        with:
+          path: "./charts/helm-chart"
+          config_path: "./kics.config"
+          output_path: "./reports"
+          output_formats: "json,html"
+          fail_on: high
+          type: "Kubernetes"
+      - name: Display kics results
+        run: |
+          cat reports/results.json
+      - name: 'Upload reports'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Kics report
+          path: ./reports/
+
+  release-job:
+    needs: kics-job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+      - name: Release
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_SKIP_EXISTING: "true"
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-web-server-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: web-server
+    app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 4 }}
+data:
+  BSEE_CLIENT_KEYSTORE_LOCATION: /home/burpsuite/keystores/webserver.keystore
+  BSEE_CLIENT_TRUSTSTORE_LOCATION: /home/burpsuite/keystores/webserver.keystore
+  BSEE_DATA_PATH: /home/burpsuite/data
+  BSEE_BURP_DOWNLOAD_PATH: /home/burpsuite/burp
+  {{ if not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase }}
+  {{ if .Values.services.webServer.useHttps }}
+  BSEE_HTTPS_PORT: "{{ .Values.services.webServer.httpsPort }}"
+  BSEE_HTTPS_KEYSTORE_LOCATION: /home/burpsuite/certificates/certificate.p12
+  {{ else }}
+  BSEE_HTTP_PORT: "{{ .Values.services.webServer.httpPort }}"
+  {{ end }}
+  {{ end }}
+  BSEE_HTTPS_REDIRECT_PORT: "443"
+  BSEE_LOGS_DIRECTORY: /home/burpsuite/logs

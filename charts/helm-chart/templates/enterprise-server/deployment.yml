@@ -1,0 +1,159 @@
+{{- $appVersion := .Values.appVersion | required ".Values.appVersion is required." -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: enterprise-server
+    app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-enterprise-server
+  template:
+    metadata:
+      labels:
+        app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-enterprise-server
+        app.kubernetes.io/name: enterprise-server
+        app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 8 }}
+      annotations:
+        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+    spec:
+      serviceAccountName: {{ include "kebabcase-release-name" . }}-enterprise-server-service-account
+      securityContext:
+        runAsUser: 42877
+        runAsGroup: 42877
+        fsGroup: 42877
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: enterprise-server
+          image: {{ include "enterprise-server-image" . }}
+          resources:
+            requests:
+              cpu: {{ .Values.enterpriseServerContainerCpu }}
+              memory: {{ .Values.enterpriseServerContainerMemory }}
+            limits:
+              cpu: {{ .Values.maxCpuPerContainer }}
+              memory: {{ .Values.maxMemoryPerContainer }}
+          env:
+            - name: BSEE_INSTALLATION_ENVIRONMENT
+              value: {{ .Values.services.enterpriseServer.installationEnvironment }}
+            - name: ENTERPRISE_SERVER_OPTS
+              value: -Xms1g -Xmx5g
+            - name: BSEE_BURP_JAVA_OPTS
+              value: -Xms128m -Xmx512m
+            - name: BSEE_ENTERPRISE_SERVER_SERVICE_HOST
+              value: $({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_HOST)
+            - name: BSEE_ENTERPRISE_SERVER_SERVICE_PORT_EPHEMERAL_AGENT
+              value: $({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_PORT_EPHEMERAL_AGENT)
+{{- include "bsee-container-registry-env" . | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-enterprise-server-secret
+          ports:
+            - name: web-server-api
+              containerPort: 8072
+            - name: agent-api
+              containerPort: 8073
+            - name: management-api
+              containerPort: 8078
+          startupProbe:
+            httpGet:
+              port: management-api
+              path: /health/readiness
+            periodSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: management-api
+              path: /health/liveness
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              port: management-api
+              path: /health/readiness
+            periodSeconds: 10
+            failureThreshold: 1
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /home/burpsuite
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 42877
+            capabilities:
+              drop:
+                - ALL
+      initContainers:
+        - name: init-burp-download
+          image: {{ include "enterprise-server-image" . }}
+          resources:
+            limits:
+              cpu: 250m
+              memory: {{ .Values.maxMemoryPerContainer }}
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          envFrom:
+            - configMapRef:
+                name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              mkdir -p /tmp/keystores && \
+              mkdir -p /tmp/prefs && \
+              mkdir -p /tmp/burp && \
+              mkdir -p /tmp/logs && \
+              mkdir -p /tmp/data/tmp && \
+              yes no | cp -i /home/burpsuite/burp/*.jar /tmp/burp/ \
+              || echo Burp download path not set or same as installation path
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 42877
+            capabilities:
+              drop:
+                - ALL
+        - name: init-enterprise-server-keystore
+          image: {{ include "enterprise-server-image" . }}
+          resources:
+            limits:
+              cpu: 250m
+              memory: {{ .Values.maxMemoryPerContainer }}
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          envFrom:
+            - configMapRef:
+                name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-enterprise-server-secret
+          command:
+            - 'sh'
+            - '-c'
+            - '/usr/local/burpsuite_enterprise/bin/createKeystore es $BSEE_HTTPS_KEYSTORE_LOCATION $BSEE_HTTPS_KEYSTORE_PASSWORD'
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /home/burpsuite
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 42877
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: {{ include "kebabcase-release-name" . }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolumeClaim }}

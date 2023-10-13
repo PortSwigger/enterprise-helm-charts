@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-web-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: web-server
+    app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-web-server
+  template:
+    metadata:
+      labels:
+        app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-web-server
+        app.kubernetes.io/name: web-server
+        app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 8 }}
+{{ include "ingress-label" . | indent 8 }}
+      annotations:
+        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+    spec:
+      serviceAccountName: {{ include "kebabcase-release-name" . }}-web-server-service-account
+      securityContext:
+        runAsUser: 42877
+        runAsGroup: 42877
+        fsGroup: 42877
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: web-server
+          image: {{ include "web-server-image" . }}
+          resources:
+            requests:
+              cpu: {{ .Values.webServerContainerCpu }}
+              memory: {{ .Values.webServerContainerMemory }}
+            limits:
+              cpu: {{ .Values.maxCpuPerContainer }}
+              memory: {{ .Values.maxMemoryPerContainer }}
+          env:
+            - name: BSEE_INSTALLATION_ENVIRONMENT
+              value: {{ .Values.services.webServer.installationEnvironment }}
+            - name: BSEE_SERVER_URL
+              value: "https://$({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_PORT)"
+            - name: WEB_SERVER_OPTS
+              value: -Xms1g -Xmx5g
+            {{ if and (.Values.services.webServer.useHttps) (not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase) }}
+            - name: BSEE_HTTPS_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.services.webServer.httpsPassphraseSecret.name }}
+                  key: {{ .Values.services.webServer.httpsPassphraseSecret.key }}
+            {{ end }}
+{{- include "bsee-container-registry-env" . | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "kebabcase-release-name" . }}-web-server-config
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8443
+              name: https
+            - containerPort: 8088
+              name: management-api
+          startupProbe:
+            httpGet:
+              port: management-api
+              path: /health/readiness
+            periodSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: management-api
+              path: /health/liveness
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              port: management-api
+              path: /health/readiness
+            periodSeconds: 10
+            failureThreshold: 1
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /home/burpsuite
+            {{ if and (.Values.services.webServer.useHttps) (not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase) }}
+            - name: {{ include "kebabcase-release-name" . }}-certificates
+              mountPath: /home/burpsuite/certificates
+            {{ end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 42877
+            capabilities:
+              drop:
+                - ALL
+      initContainers:
+        - name: init-web-server-keystore
+          image: {{ include "web-server-image" . }}
+          resources:
+            limits:
+              cpu: 250m
+              memory: {{ .Values.maxMemoryPerContainer }}
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          envFrom:
+            - configMapRef:
+                name: {{ include "kebabcase-release-name" . }}-web-server-config
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              mkdir -p /home/burpsuite/keystores &&
+              mkdir -p /home/burpsuite/logs &&
+              mkdir -p /home/burpsuite/burp &&
+              /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /home/burpsuite
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 42877
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: {{ include "kebabcase-release-name" . }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolumeClaim }}
+        {{ if and (.Values.services.webServer.useHttps) (not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase) }}
+        - name: {{ include "kebabcase-release-name" . }}-certificates
+          secret:
+            items:
+            - key: {{ .Values.services.webServer.httpsCertificateSecret.key }}
+              path: certificate.p12
+            secretName: {{ .Values.services.webServer.httpsCertificateSecret.name }}
+        {{ end }}

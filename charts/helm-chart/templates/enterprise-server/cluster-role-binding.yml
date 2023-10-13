@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-cluster-role-binding
+  labels:
+    app.kubernetes.io/name: enterprise-server
+    app.kubernetes.io/component: rbac
+{{ include "recommended-labels" . | indent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kebabcase-release-name" . }}-enterprise-server-service-account
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-admin
+  apiGroup: rbac.authorization.k8s.io

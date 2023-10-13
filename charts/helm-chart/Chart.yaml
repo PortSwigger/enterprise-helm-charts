@@ -1,0 +1,17 @@
+apiVersion: v2
+name: burp-suite-enterprise-edition
+description: A Helm chart to create the k8s cluster dependencies for BSEE
+type: application
+version: 0.0.0
+keywords:
+  - burpsuite
+  - dast
+  - security
+  - web
+home: https://portswigger.net/
+sources:
+  - https://github.com/portswigger/enterprise-helm-charts/
+maintainers:
+  - name: Portswigger
+    email: hello@portswigger.net
+icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/33292500f49f9d9ddef2d22d3a53b13f3210674e/enterprise-logo.svg

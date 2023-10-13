@@ -1,0 +1,76 @@
+# Default values for EKS cluster config.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# appVersion is required and defines which version of Enterprise to use
+
+applicationName: bsee
+# -- Name of the persistent volume claim used for shared storage between the Enterprise Pods
+persistentVolumeClaim: bsee-pvc
+# -- The container registry used to get the Enterprise images
+containerRegistry: "public.ecr.aws"
+
+maxCpuPerContainer: 4000m
+minCpuPerContainer: 100m
+defaultCpuPerContainer: 100m
+defaultRequestCpuPerContainer: 100m
+
+maxMemoryPerContainer: 8Gi
+minMemoryPerContainer: 128Mi
+defaultMemoryPerContainer: 128Mi
+defaultRequestMemoryPerContainer: 128Mi
+
+webServerContainerCpu: 1400m
+webServerContainerMemory: 4Gi
+enterpriseServerContainerCpu: 1400m
+enterpriseServerContainerMemory: 4Gi
+connectionCheckContainerCpu: 1400m
+connectionCheckContainerMemory: 2Gi
+scanContainerCpu: 1400m
+scanContainerMemory: 8Gi
+
+services:
+  webServer:
+    installationEnvironment: KUBERNETES
+    label: "app.portswigger.net/ingress: web-server"
+    # If set to true, then none of the configuration below will be used, and we will attempt to read the HTTP(S)
+    # configuration from the database. This should only be used if upgrading from v2023.6 or earlier. It has no effect
+    # when performing a helm install.
+    useDeprecatedHttpConfigFromDatabase: false
+    useHttps: false
+    httpPort: "8080"
+    httpsPort: "8443"
+    httpsCertificateSecret:
+      name: bsee-web-server-https
+      key: certificate
+    httpsPassphraseSecret:
+      name: bsee-web-server-https
+      key: passphrase
+  enterpriseServer:
+    installationEnvironment: KUBERNETES
+
+support:
+  ## -- Whether to use BSEE images with the Oracle libraries included.
+  oracle: false
+
+database:
+  # -- JDBC connection URL for the database
+  url: ""
+  # -- Username for the Enterprise Server database connection
+  enterpriseServerUsername: ""
+  # -- Connection username for the Enterprise Server database connection.
+  # Required if connection username differs from internal username e.g. if @hostname suffix is mandated (Azure)
+  enterpriseServerConnectionUsername: ""
+  # -- Password for the Enterprise Server database connection
+  enterpriseServerPassword: ""
+  # -- Username for the Scanning Resource database connection
+  scanningResourceUsername: ""
+  # -- Connection username for the Scanning Resource database connection
+  # Required if connection username differs from internal username e.g. if @hostname suffix is mandated (Azure)
+  scanningResourceConnectionUsername: ""
+  # -- Password for the Scanning Resource database connection
+  scanningResourcePassword: ""
+  # -- (int) Idle timeout (ms) for the database connection
+  idleTimeout: 60000
+  # -- (int) Maximum lifetime timeout (ms) for the database connection
+  maxLifetimeTimeout: 120000

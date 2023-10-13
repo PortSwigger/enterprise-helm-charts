@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-limit-range
+  namespace: {{ .Release.Namespace }}
+spec:
+  limits:
+    - max:
+        cpu: {{ .Values.maxCpuPerContainer }}
+        memory: {{ .Values.maxMemoryPerContainer }}
+      min:
+        cpu: {{ .Values.minCpuPerContainer }}
+        memory: {{ .Values.minMemoryPerContainer }}
+      default:
+        cpu: {{ .Values.defaultCpuPerContainer }}
+        memory: {{ .Values.defaultMemoryPerContainer }}
+      defaultRequest:
+        cpu: {{ .Values.defaultRequestCpuPerContainer }}
+        memory: {{ .Values.defaultRequestMemoryPerContainer }}
+      type: Container
