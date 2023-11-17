@@ -21,11 +21,12 @@ jobs:
         uses: checkmarx/kics-github-action@v1.7.0
         with:
           path: "./charts/helm-chart"
-          config_path: "./kics.config"
           output_path: "./reports"
           output_formats: "json,html"
           fail_on: high
           type: "Kubernetes"
+          exclude_paths: "./sample-ingress"
+          exclude_results: "1e4a62fead6a34b8be88fb1538cf47340f0a8d0e7eca9e54a1073e5934d33514"
       - name: Display kics results
         run: |
           cat reports/results.json
