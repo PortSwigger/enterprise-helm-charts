@@ -10,8 +10,7 @@ The command ```helm repo add bsee https://portswigger.github.io/enterprise-helm-
 The helm chart in this repository can then be installed using the following command:
 
 ```shell
-helm install bsee/burp-suite-enterprise-edition <INTERNAL NAME> \
-   --set appVersion=<ENTERPRISE VERSION> \
+helm install ${RELEASE_NAME} bsee/burp-suite-enterprise-edition \
    --set database.url=${DATABASE_URL} \
    --set database.enterpriseServerUsername=${DATABASE_ENTERPRISE_SERVER_USERNAME} \
    --set database.enterpriseServerConnectionUsername=${DATABASE_ENTERPRISE_SERVER_CONNECTION_USERNAME} \
@@ -24,7 +23,4 @@ helm install bsee/burp-suite-enterprise-edition <INTERNAL NAME> \
 Where ```enterpriseServerConnectionUsername``` and ```scanningResourceConnectionUsername``` are optional.
 
 More information about custom values can be found in [getting started](https://portswigger.net/burp/documentation/enterprise/getting-started/kubernetes/new-deployment/install-app#providing-custom-values-for-the-helm-chart) documentation.
-
-The published versions of enterprise can be found in the [Amazon Elastic Container Registry](https://gallery.ecr.aws/portswigger/enterprise-server) under the "Image tags" tab.
-
 
