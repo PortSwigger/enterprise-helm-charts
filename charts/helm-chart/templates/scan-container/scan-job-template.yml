@@ -15,6 +15,7 @@ spec:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
+{{ include "image-pull-secrets" . | indent 6 }}
       containers:
         - env:
             - name: BSEE_EPHEMERAL_AGENT_LICENSING_MAX_RETRIES

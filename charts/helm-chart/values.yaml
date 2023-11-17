@@ -2,13 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# appVersion is required and defines which version of Enterprise to use
-
 applicationName: bsee
 # -- Name of the persistent volume claim used for shared storage between the Enterprise Pods
 persistentVolumeClaim: bsee-pvc
 # -- The container registry used to get the Enterprise images
 containerRegistry: "public.ecr.aws"
+imagePullSecrets: []
 
 maxCpuPerContainer: 4000m
 minCpuPerContainer: 100m
@@ -48,10 +47,6 @@ services:
       key: passphrase
   enterpriseServer:
     installationEnvironment: KUBERNETES
-
-support:
-  ## -- Whether to use BSEE images with the Oracle libraries included.
-  oracle: false
 
 database:
   # -- JDBC connection URL for the database

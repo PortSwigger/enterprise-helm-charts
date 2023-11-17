@@ -1,7 +1,7 @@
 {{- define "recommended-labels" -}}
 app.kubernetes.io/part-of: {{ .Values.applicationName }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/version: {{ .Values.appVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- end -}}
@@ -23,8 +23,15 @@ helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- end }}
 {{- end -}}
 
+{{- define "image-pull-secrets" -}}
+{{- if .Values.imagePullSecrets -}}
+imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets }}
+{{- end -}}
+{{- end -}}
+
 {{- define "image-tag" -}}
-{{- .Values.appVersion -}}{{- if .Values.support.oracle -}}-oracle{{- end -}}
+{{- .Chart.AppVersion -}}
 {{- end -}}
 
 {{- define "enterprise-server-image" -}}

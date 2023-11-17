@@ -1,5 +1,3 @@
-{{- $appVersion := .Values.appVersion | required ".Values.appVersion is required." -}}
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,6 +24,7 @@ spec:
       annotations:
         seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
     spec:
+{{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-enterprise-server-service-account
       securityContext:
         runAsUser: 42877

@@ -23,6 +23,7 @@ spec:
       annotations:
         seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
     spec:
+{{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-web-server-service-account
       securityContext:
         runAsUser: 42877

@@ -1,4 +1,4 @@
-Thank you for installing {{ .Chart.Name }} {{ .Values.appVersion }}.
+Thank you for installing {{ .Chart.Name }} {{ .Chart.AppVersion }}.
 
 Your release is named {{ .Release.Name }}.
 
@@ -25,6 +25,3 @@ You can access the application by using https://{{ $url }}/
 {{ end }}
 
 You may need to wait a few minutes for {{ .Chart.Name }} to install before accessing the URL.
-{{ if eq .Values.support.oracle true }}
-This deployment has been made including Oracle support.
-{{ end }}

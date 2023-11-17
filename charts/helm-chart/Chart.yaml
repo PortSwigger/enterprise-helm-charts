@@ -2,7 +2,8 @@ apiVersion: v2
 name: burp-suite-enterprise-edition
 description: A Helm chart to create the k8s cluster dependencies for BSEE
 type: application
-version: 1.0.0
+version: 2023.10.0
+appVersion: 2023.10-14638
 keywords:
   - burpsuite
   - dast
