@@ -27,7 +27,7 @@ jobs:
           fail_on: high
           type: "Kubernetes"
           exclude_paths: "./sample-ingress"
-          exclude_results: "1e4a62fead6a34b8be88fb1538cf47340f0a8d0e7eca9e54a1073e5934d33514"
+          exclude_results: "93112a21fc479a3b323d03f921f53d86fdf73ece7b819aa98764b4f2e666858b"
       - name: Display kics results
         if: always()
         run: |
