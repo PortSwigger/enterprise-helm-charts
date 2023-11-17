@@ -1,6 +1,7 @@
 name: Check with Kics and release if successful
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
