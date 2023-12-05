@@ -55,6 +55,7 @@ A Helm chart to create the k8s cluster dependencies for BSEE
 | services.webServer.httpsPort | string | `"8443"` |  |
 | services.webServer.installationEnvironment | string | `"KUBERNETES"` |  |
 | services.webServer.label | string | `"app.portswigger.net/ingress: web-server"` |  |
+| services.webServer.type | string | `"ClusterIP"` |  |
 | services.webServer.useDeprecatedHttpConfigFromDatabase | bool | `false` |  |
 | services.webServer.useHttps | bool | `false` |  |
 | support.oracle | bool | `false` |  |
