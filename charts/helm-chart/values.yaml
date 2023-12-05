@@ -30,6 +30,7 @@ scanContainerMemory: 8Gi
 
 services:
   webServer:
+    type: 'ClusterIP'
     installationEnvironment: KUBERNETES
     label: "app.portswigger.net/ingress: web-server"
     # If set to true, then none of the configuration below will be used, and we will attempt to read the HTTP(S)
