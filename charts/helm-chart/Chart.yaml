@@ -11,7 +11,7 @@ keywords:
   - web
 home: https://portswigger.net/
 sources:
-  - https://github.com/portswigger/enterprise-helm-charts/
+  - https://github.com/peter-svensson/enterprise-helm-charts/
 maintainers:
   - name: Portswigger
     email: hello@portswigger.net
