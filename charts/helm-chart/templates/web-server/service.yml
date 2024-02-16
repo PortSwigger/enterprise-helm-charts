@@ -5,8 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 {{- if .Values.services.webServer.annotations }}
   annotations:
-{{ toYaml .Values.services.webServer.annotations | indent 4 }}
-{{ end -}}
+{{ toYaml .Values.services.webServer.annotations | indent 4 -}}
+{{ end }}
   labels:
     app.kubernetes.io/name: web-server
     app.kubernetes.io/component: server
@@ -15,8 +15,8 @@ spec:
   selector:
     app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-web-server
 {{- if .Values.services.webServer.type }}
-  type: {{ .Values.services.webServer.type }}
-{{ end -}}
+  type: {{ .Values.services.webServer.type -}}
+{{ end }}
   ports:
     - name: http
       protocol: TCP
