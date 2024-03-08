@@ -57,6 +57,8 @@ A Helm chart to create the k8s cluster dependencies for BSEE
 | services.webServer.label | string | `"app.portswigger.net/ingress: web-server"` |  |
 | services.webServer.useDeprecatedHttpConfigFromDatabase | bool | `false` |  |
 | services.webServer.useHttps | bool | `false` |  |
+| services.webServer.annotations | array | `null` | Optional annotations to add to the created service. If omitted, no annotations will be added. |
+| services.webServer.type | string | `null` | Optional service type to create. If omitted, target platform default will be used. |
 | support.oracle | bool | `false` |  |
 | webServerContainerCpu | string | `"1400m"` |  |
 | webServerContainerMemory | string | `"4Gi"` |  |
