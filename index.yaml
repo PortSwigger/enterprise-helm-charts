@@ -2,6 +2,29 @@ apiVersion: v1
 entries:
   burp-suite-enterprise-edition:
   - apiVersion: v2
+    appVersion: 2024.3.1-16331
+    created: "2024-03-15T09:42:38.693920532Z"
+    description: A Helm chart to create the k8s cluster dependencies for BSEE. See
+      the release notes at https://portswigger.net/burp/releases/enterprise-edition-2024-3-1.
+    digest: 0f32b768021d75a9280bc4498569a68cdb87156f9837806f8caca170c2c4cff2
+    home: https://portswigger.net/
+    icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/33292500f49f9d9ddef2d22d3a53b13f3210674e/enterprise-logo.svg
+    keywords:
+    - burpsuite
+    - dast
+    - security
+    - web
+    maintainers:
+    - email: hello@portswigger.net
+      name: Portswigger
+    name: burp-suite-enterprise-edition
+    sources:
+    - https://github.com/portswigger/enterprise-helm-charts/
+    type: application
+    urls:
+    - https://github.com/PortSwigger/enterprise-helm-charts/releases/download/burp-suite-enterprise-edition-2024.3.1/burp-suite-enterprise-edition-2024.3.1.tgz
+    version: 2024.3.1
+  - apiVersion: v2
     appVersion: 2024.3-16256
     created: "2024-03-08T10:25:54.444384663Z"
     description: A Helm chart to create the k8s cluster dependencies for BSEE. See
@@ -181,4 +204,4 @@ entries:
     urls:
     - https://github.com/PortSwigger/enterprise-helm-charts/releases/download/burp-suite-enterprise-edition-1.0.0/burp-suite-enterprise-edition-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-08T10:25:54.444417053Z"
+generated: "2024-03-15T09:42:38.693964114Z"
