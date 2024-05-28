@@ -10,7 +10,7 @@ A Helm chart to create the k8s cluster dependencies for BSEE
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Portswigger | <hello@portswigger.net> |  |
+| Portswigger | <support@portswigger.net> |  |
 
 ## Source Code
 
