@@ -1,20 +1,20 @@
 Thank you for installing {{ .Chart.Name }} {{ .Chart.AppVersion }}.
- 
+
 Your release is named {{ .Release.Name }}.
- 
+
 To learn more about the release, try:
- 
+
   $ helm status {{ .Release.Name }}
   $ helm get all {{ .Release.Name }}
- 
+
 {{- $ingressLabel := split ":" .Values.services.webServer.label -}}
 {{- $selectorLabelKey := trim ($ingressLabel._0) -}}
 {{- $selectorLabelValue := trim ($ingressLabel._1) -}}
- 
+
 {{- range $index, $spec := (lookup "v1" "Service" "" "").items -}}
     {{- $selector := .spec.selector -}}
     {{- $selectorValue := get $selector $selectorLabelKey -}}
- 
+
     {{ if eq $selectorValue $selectorLabelValue }}
         {{ $lbIngress := .status.loadBalancer.ingress }}
         {{- if $lbIngress -}}
@@ -28,5 +28,5 @@ To learn more about the release, try:
         {{- end -}}
     {{- end -}}
 {{ end }}
- 
+
 You may need to wait a few minutes for {{ .Chart.Name }} to install before accessing the URL.
