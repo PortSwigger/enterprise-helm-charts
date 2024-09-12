@@ -17,10 +17,15 @@ To learn more about the release, try:
 
     {{ if eq $selectorValue $selectorLabelValue }}
         {{ $lbIngress := .status.loadBalancer.ingress }}
-        {{- $hostName := get (first $lbIngress) "hostname" -}}
-        {{- $ip := get (first $lbIngress) "ip" -}}
-        {{ $url := or $hostName $ip }}
-You can access the application by using https://{{ $url }}/
+        {{- if $lbIngress -}}
+          {{- $hostName := get (first $lbIngress) "hostname" -}}
+          {{- $ip := get (first $lbIngress) "ip" -}}
+          {{ $url := or $hostName $ip }}
+  You can access the application by using https://{{ $url }}/
+        {{- else -}}
+  You appear to be using a non-standard load balancer configuration.
+  Please check your deployment for the correct endpoint address.
+        {{- end -}}
     {{- end -}}
 {{ end }}
 
