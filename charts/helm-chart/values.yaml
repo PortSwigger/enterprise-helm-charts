@@ -48,6 +48,25 @@ services:
   enterpriseServer:
     installationEnvironment: KUBERNETES
 
+# Toleration for k8s deployments
+
+# tolerations:
+#   - key: "dedicated"
+#     operator: "Equal"
+#     value: "burp"
+#     effect: "NoSchedule"
+
+# nodeAffinity for k8s deployments
+
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#       - matchExpressions:
+#           - key: "dedicated"
+#             operator: "In"
+#             values:
+#               - "burp"
+
 database:
   # -- JDBC connection URL for the database
   url: ""
