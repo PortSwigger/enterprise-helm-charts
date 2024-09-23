@@ -53,3 +53,33 @@ imagePullSecrets:
 {{- define "screaming-snakecase-release-name" -}}
 {{- snakecase .Release.Name | replace " " "_" | replace "." "_" | replace "-" "_" | upper -}}
 {{- end -}}
+
+{{- define "tolerations" -}}
+{{- if .Values.tolerations }}
+tolerations:
+{{- range .Values.tolerations }}
+  - key: "{{ .key }}"
+    operator: "{{ .operator }}"
+    value: "{{ .value }}"
+    effect: "{{ .effect }}"
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{- define "nodeAffinity" -}}
+{{- if .Values.nodeAffinity }}
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        {{- range .Values.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms }}
+        - matchExpressions:
+            {{- range .matchExpressions }}
+            - key: {{ .key }}
+              operator: {{ .operator }}
+              values:
+                {{ toYaml .values  }}
+            {{- end }}
+        {{- end }}
+{{- end }}
+{{- end -}}
