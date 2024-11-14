@@ -19,7 +19,7 @@ jobs:
         run: mkdir -p reports
       - id: kics
         name: 'KICS Github Action'
-        uses: checkmarx/kics-github-action@v1.7.0
+        uses: checkmarx/kics-github-action@v2
         with:
           path: "./charts/helm-chart"
           output_path: "./reports"
