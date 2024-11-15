@@ -40,6 +40,8 @@ jobs:
 
   release-job:
     needs: kics-job
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
