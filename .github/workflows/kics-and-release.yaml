@@ -33,7 +33,7 @@ jobs:
         run: |
           cat reports/results.json
       - name: 'Upload reports'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Kics report
           path: ./reports/
