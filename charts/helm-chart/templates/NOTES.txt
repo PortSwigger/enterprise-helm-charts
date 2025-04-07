@@ -30,5 +30,6 @@ To learn more about the release, try:
         {{- end -}}
     {{- end -}}
   {{- end }}
+{{ end }}
 
 You may need to wait a few minutes for {{ .Chart.Name }} to install before accessing the application.
