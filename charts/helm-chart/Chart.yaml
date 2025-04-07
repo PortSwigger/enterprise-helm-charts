@@ -16,4 +16,4 @@ name: burp-suite-enterprise-edition
 sources:
 - https://github.com/portswigger/enterprise-helm-charts/
 type: application
-version: 2025.3.1
+version: 2025.3.2
