@@ -7,26 +7,28 @@ To learn more about the release, try:
   $ helm status {{ .Release.Name }}
   $ helm get all {{ .Release.Name }}
 
-{{- $ingressLabel := split ":" .Values.services.webServer.label -}}
-{{- $selectorLabelKey := trim ($ingressLabel._0) -}}
-{{- $selectorLabelValue := trim ($ingressLabel._1) -}}
+{{- if .Values.autoDisplayApplicationUrl | default false }}
+  {{- /* Automatically find and display the application URL - requires cluster-wide permissions */ -}}
+  {{- $ingressLabel := split ":" .Values.services.webServer.label -}}
+  {{- $selectorLabelKey := trim ($ingressLabel._0) -}}
+  {{- $selectorLabelValue := trim ($ingressLabel._1) -}}
 
-{{- range $index, $spec := (lookup "v1" "Service" "" "").items -}}
+  {{- range $index, $spec := (lookup "v1" "Service" "" "").items -}}
     {{- $selector := .spec.selector -}}
     {{- $selectorValue := get $selector $selectorLabelKey -}}
 
     {{ if eq $selectorValue $selectorLabelValue }}
-        {{ $lbIngress := .status.loadBalancer.ingress }}
-        {{- if $lbIngress -}}
-          {{- $hostName := get (first $lbIngress) "hostname" -}}
-          {{- $ip := get (first $lbIngress) "ip" -}}
-          {{ $url := or $hostName $ip }}
+      {{ $lbIngress := .status.loadBalancer.ingress }}
+      {{- if $lbIngress -}}
+        {{- $hostName := get (first $lbIngress) "hostname" -}}
+        {{- $ip := get (first $lbIngress) "ip" -}}
+        {{ $url := or $hostName $ip }}
   You can access the application by using https://{{ $url }}/
-        {{- else -}}
+      {{- else -}}
   You appear to be using a non-standard load balancer configuration.
   Please check your deployment for the correct endpoint address.
         {{- end -}}
     {{- end -}}
-{{ end }}
+  {{- end }}
 
-You may need to wait a few minutes for {{ .Chart.Name }} to install before accessing the URL.
+You may need to wait a few minutes for {{ .Chart.Name }} to install before accessing the application.
