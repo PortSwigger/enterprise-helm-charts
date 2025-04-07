@@ -28,6 +28,11 @@ connectionCheckContainerMemory: 2Gi
 scanContainerCpu: 1400m
 scanContainerMemory: 8Gi
 
+# -- Enable automatic display of application URL after installation.
+# When enabled, attempts to find the LoadBalancer URL by looking up all services in the cluster.
+# Requires cluster-wide service read permissions, so disable if you have limited RBAC.
+autoDisplayApplicationUrl: false
+
 services:
   webServer:
     installationEnvironment: KUBERNETES
