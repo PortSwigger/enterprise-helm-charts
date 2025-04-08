@@ -1,9 +1,9 @@
 # enterprise-helm-charts
 
-Helm charts for BSEE Kubernetes installation. 
+Helm charts for BSEE Kubernetes installation.
 Currently only contains the standard kubernetes BSEE installation helm chart.
 
-# Usage
+## Usage
 
 The command ```helm repo add bsee https://portswigger.github.io/enterprise-helm-charts/``` can be used to add the repo.
 
@@ -23,4 +23,3 @@ helm install ${RELEASE_NAME} bsee/burp-suite-enterprise-edition \
 Where ```enterpriseServerConnectionUsername``` and ```scanningResourceConnectionUsername``` are optional.
 
 More information about custom values can be found in [getting started](https://portswigger.net/burp/documentation/enterprise/getting-started/kubernetes/new-deployment/install-app#providing-custom-values-for-the-helm-chart) documentation.
-
