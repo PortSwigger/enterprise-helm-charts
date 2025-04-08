@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: 2025.3-21104
 description: A Helm chart to create the k8s cluster dependencies for BSEE. See the
-  release notes at https://portswigger.net/burp/releases/enterprise-edition-2024-10-1-1.
+  release notes at https://portswigger.net/burp/releases/enterprise-edition-2025-3.
 home: https://portswigger.net/
 icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/33292500f49f9d9ddef2d22d3a53b13f3210674e/enterprise-logo.svg
 keywords:
