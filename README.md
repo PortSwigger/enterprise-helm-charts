@@ -1,7 +1,7 @@
 # enterprise-helm-charts
 
-Helm charts for BSEE Kubernetes installation. 
-Currently only contains the standard kubernetes BSEE installation helm chart.
+Helm charts for Burp Suite DAST Kubernetes installation. 
+Currently only contains the standard kubernetes Burp Suite DAST installation helm chart.
 
 # Usage
 
