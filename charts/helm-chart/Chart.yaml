@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 2025.3.1-21156
-description: A Helm chart to create the k8s cluster dependencies for Burp Suite DAST. See the
+description: A helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the
   release notes at https://portswigger.net/burp/releases/enterprise-edition-2025-3-1.
 home: https://portswigger.net/
 icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/81da282cb1ab8d9f348de686d5bbb1a35aa1bb7e/charts/helm-chart/dast-logo.svg

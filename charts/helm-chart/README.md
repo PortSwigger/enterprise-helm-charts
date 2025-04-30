@@ -2,7 +2,7 @@
 
 ![Version: 2023.10.1](https://img.shields.io/badge/Version-2023.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
-A Helm chart to create the k8s cluster dependencies for Burp Suite DAST
+A helm chart to deploy Burp Suite DAST on a Kubernetes cluster
 
 **Homepage:** <https://portswigger.net/>
 
