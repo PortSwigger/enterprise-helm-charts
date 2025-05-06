@@ -1,4 +1,4 @@
-# burp-suite-enterprise-edition
+# burp-suite-dast
 
 ![Version: 2023.10.1](https://img.shields.io/badge/Version-2023.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
@@ -14,7 +14,7 @@ A helm chart to deploy Burp Suite DAST on a Kubernetes cluster
 
 ## Source Code
 
-* <https://github.com/portswigger/enterprise-helm-charts/>
+* <https://github.com/portswigger/dast-helm-charts/>
 
 ## Values
 

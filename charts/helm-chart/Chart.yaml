@@ -10,10 +10,10 @@ keywords:
 - security
 - web
 maintainers:
-- email: hello@portswigger.net
+- email: support@portswigger.net
   name: PortSwigger
-name: burp-suite-enterprise-edition
+name: burp-suite-dast
 sources:
-- https://github.com/portswigger/enterprise-helm-charts/
+- https://github.com/portswigger/dast-helm-charts/
 type: application
 version: 2025.3.1
