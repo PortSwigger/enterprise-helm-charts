@@ -69,7 +69,7 @@ spec:
             httpGet:
               port: management-api
               path: /health/readiness
-            periodSeconds: 5
+            periodSeconds: 10
             failureThreshold: 60
           livenessProbe:
             httpGet:

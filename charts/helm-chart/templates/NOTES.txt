@@ -30,3 +30,4 @@ To learn more about the release, try:
 {{ end }}
 
 You may need to wait a few minutes for {{ .Chart.Name }} to install before accessing the URL.
+Upgrades may take up to 10 minutes to complete.
