@@ -1,4 +1,4 @@
-# burp-suite-dast
+# burp-suite-enterprise-edition
 
 ![Version: 2023.10.1](https://img.shields.io/badge/Version-2023.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 

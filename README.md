@@ -1,4 +1,4 @@
-# dast-helm-charts
+# enterprise-helm-charts
 
 Helm charts for Burp Suite DAST Kubernetes installation.
 
