@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 
 applicationName: bsee
-# -- Name of the persistent volume claim used for shared storage between the Enterprise Pods
+# -- Name of the persistent volume claim used for shared storage between the DAST Pods
 persistentVolumeClaim: bsee-pvc
-# -- The container registry used to get the Enterprise images
+# -- The container registry used to get the DAST images
 containerRegistry: "public.ecr.aws"
 imagePullSecrets: []
 
@@ -51,12 +51,12 @@ services:
 database:
   # -- JDBC connection URL for the database
   url: ""
-  # -- Username for the Enterprise Server database connection
+  # -- Username for the DAST Server database connection
   enterpriseServerUsername: ""
-  # -- Connection username for the Enterprise Server database connection.
+  # -- Connection username for the DAST Server database connection.
   # Required if connection username differs from internal username e.g. if @hostname suffix is mandated (Azure)
   enterpriseServerConnectionUsername: ""
-  # -- Password for the Enterprise Server database connection
+  # -- Password for the DAST Server database connection
   enterpriseServerPassword: ""
   # -- Username for the Scanning Resource database connection
   scanningResourceUsername: ""

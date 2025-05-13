@@ -10,7 +10,7 @@ keywords:
 - security
 - web
 maintainers:
-- email: hello@portswigger.net
+- email: support@portswigger.net
   name: PortSwigger
 name: burp-suite-enterprise-edition
 sources:
