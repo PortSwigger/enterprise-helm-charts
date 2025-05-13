@@ -2,9 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-applicationName: dast
+applicationName: bsee
 # -- Name of the persistent volume claim used for shared storage between the DAST Pods
-persistentVolumeClaim: dast-pvc
+persistentVolumeClaim: bsee-pvc
 # -- The container registry used to get the DAST images
 containerRegistry: "public.ecr.aws"
 imagePullSecrets: []

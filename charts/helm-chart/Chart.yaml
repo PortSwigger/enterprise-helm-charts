@@ -12,8 +12,8 @@ keywords:
 maintainers:
 - email: support@portswigger.net
   name: PortSwigger
-name: burp-suite-dast
+name: burp-suite-enterprise-edition
 sources:
-- https://github.com/portswigger/dast-helm-charts/
+- https://github.com/portswigger/enterprise-helm-charts/
 type: application
 version: 2025.3.1

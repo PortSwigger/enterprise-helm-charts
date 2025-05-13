@@ -14,7 +14,7 @@ A helm chart to deploy Burp Suite DAST on a Kubernetes cluster
 
 ## Source Code
 
-* <https://github.com/portswigger/dast-helm-charts/>
+* <https://github.com/portswigger/enterprise-helm-charts/>
 
 ## Values
 
