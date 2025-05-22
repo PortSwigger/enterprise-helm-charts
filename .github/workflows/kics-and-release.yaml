@@ -9,37 +9,37 @@ on:
       - "charts/**"
 
 jobs:
-  # kics-job:
-  #   runs-on: ubuntu-latest
-  #   name: kics-github-action
-  #   steps:
-  #     - name: 'Checkout Helm chart'
-  #       uses: actions/checkout@v4
-  #     - name: 'Make reports directory'
-  #       run: mkdir -p reports
-  #     - id: kics
-  #       name: 'KICS Github Action'
-  #       uses: checkmarx/kics-github-action@v2
-  #       with:
-  #         path: "./charts/helm-chart"
-  #         output_path: "./reports"
-  #         output_formats: "json,html"
-  #         fail_on: high
-  #         type: "Kubernetes"
-  #         exclude_paths: "./sample-ingress"
-  #         exclude_results: "93112a21fc479a3b323d03f921f53d86fdf73ece7b819aa98764b4f2e666858b,3cd5d39e84c9997fc17ac7628e0feca13cab1f11ef98915c4be2bef4ea409987,5d5be88a14ec8b1cee072632f580a181675a457d023cd014847df12d474e0e58,2b22e236773940f6631037b4500963cf949d45e27fda03f5b0c0c51a0ea40d63,9a73cb5a95cce33307c12f1e456635147b3b5274a54daa6deb13103a5edc2857"
-  #     - name: Display kics results
-  #       if: always()
-  #       run: |
-  #         cat reports/results.json
-  #     - name: 'Upload reports'
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: Kics report
-  #         path: ./reports/
+  kics-job:
+    runs-on: ubuntu-latest
+    name: kics-github-action
+    steps:
+      - name: 'Checkout Helm chart'
+        uses: actions/checkout@v4
+      - name: 'Make reports directory'
+        run: mkdir -p reports
+      - id: kics
+        name: 'KICS Github Action'
+        uses: checkmarx/kics-github-action@v2
+        with:
+          path: "./charts/helm-chart"
+          output_path: "./reports"
+          output_formats: "json,html"
+          fail_on: high
+          type: "Kubernetes"
+          exclude_paths: "./sample-ingress"
+          exclude_results: "93112a21fc479a3b323d03f921f53d86fdf73ece7b819aa98764b4f2e666858b,3cd5d39e84c9997fc17ac7628e0feca13cab1f11ef98915c4be2bef4ea409987,5d5be88a14ec8b1cee072632f580a181675a457d023cd014847df12d474e0e58,2b22e236773940f6631037b4500963cf949d45e27fda03f5b0c0c51a0ea40d63,9a73cb5a95cce33307c12f1e456635147b3b5274a54daa6deb13103a5edc2857"
+      - name: Display kics results
+        if: always()
+        run: |
+          cat reports/results.json
+      - name: 'Upload reports'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kics report
+          path: ./reports/
 
   release-job:
-    # needs: kics-job
+    needs: kics-job
     permissions:
       contents: write
     runs-on: ubuntu-latest
