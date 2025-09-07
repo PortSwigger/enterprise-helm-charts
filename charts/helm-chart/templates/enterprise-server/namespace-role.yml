@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-reader-role
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: enterprise-server
+    app.kubernetes.io/component: rbac
+{{ include "recommended-labels" . | indent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods","pods/log"]
+    verbs: ["get","list","watch"]
