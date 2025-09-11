@@ -8,6 +8,6 @@ metadata:
     app.kubernetes.io/component: rbac
 {{ include "recommended-labels" . | indent 4 }}
 rules:
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get","list"]
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
+    verbs: [ "get", "list" ]
