@@ -13,7 +13,7 @@ rules:
     verbs: ["create", "deletecollection"]
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get"]
+    verbs: ["get", "list"]
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["create", "get", "delete", "list"]
