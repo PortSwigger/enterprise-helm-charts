@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "kebabcase-release-name" . }}-enterprise-server-reader-role
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-admin
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: enterprise-server
