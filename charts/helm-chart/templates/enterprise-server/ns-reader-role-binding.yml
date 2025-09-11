@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "kebabcase-release-name" . }}-enterprise-server-admin-role-binding
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-ns-reader-role-binding
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: enterprise-server
@@ -14,4 +14,4 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "kebabcase-release-name" . }}-enterprise-server-admin-role
+  name: {{ include "kebabcase-release-name" . }}-enterprise-server-ns-reader-role
