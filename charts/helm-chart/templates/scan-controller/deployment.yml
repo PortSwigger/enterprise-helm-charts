@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-scan-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: scan-controller
+    app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-scan-controller
+  template:
+    metadata:
+      labels:
+        app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-scan-controller
+        app.kubernetes.io/name: scan-controller
+        app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 8 }}
+      annotations:
+        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+    spec:
+{{ include "image-pull-secrets" . | indent 6 }}
+      serviceAccountName: {{ include "kebabcase-release-name" . }}-scan-controller-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 42877
+        runAsGroup: 42877
+        fsGroup: 42877
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: scan-controller
+          image: {{ include "scan-controller-image" . }}
+          resources:
+            requests:
+              cpu: {{ .Values.scanControllerCpu }}
+              memory: {{ .Values.scanControllerMemory }}
+            limits:
+              cpu: {{ .Values.maxCpuPerContainer }}
+              memory: {{ .Values.maxMemoryPerContainer }}
+          env:
+            - name: BSEE_SERVER_URL
+              value: "https://$({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_PORT_SCAN_CONTROLLER)"
+            - name: BSEE_WEB_SERVER_URL
+              value: "{{ if .Values.services.webServer.useHttps }}https://$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_PORT_HTTPS){{ else }}http://$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_PORT_HTTP){{ end }}"
+            - name: BSEE_REQUEST_RELAY_URL
+              value: "http://$({{ include "screaming-snakecase-release-name" . }}_CONNECTION_RELAY_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_CONNECTION_RELAY_SERVICE_PORT_HTTP)"
+          envFrom:
+            - configMapRef:
+                name: {{ include "kebabcase-release-name" . }}-scan-controller-config
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-relay-shared-secret
+          ports:
+            - name: management-api
+              containerPort: 8078
+          startupProbe:
+            httpGet:
+              port: management-api
+              path: /health/readiness
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: management-api
+              path: /health/liveness
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              port: management-api
+              path: /health/readiness
+            periodSeconds: 10
+            failureThreshold: 1
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /home/burpsuite
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 42877
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: {{ include "kebabcase-release-name" . }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolumeClaim }}

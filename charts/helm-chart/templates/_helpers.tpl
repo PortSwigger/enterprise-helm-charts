@@ -42,8 +42,16 @@ imagePullSecrets:
 {{ include "container-registry" . }}portswigger/web-server:{{ include "image-tag" . }}
 {{- end -}}
 
-{{- define "ephemeral-agent-image" -}}
-{{ include "container-registry" . }}portswigger/ephemeral-agent:{{ include "image-tag" . }}
+{{- define "scan-controller-image" -}}
+{{ include "container-registry" . }}portswigger/scan-controller:{{ include "image-tag" . }}
+{{- end -}}
+
+{{- define "portswigger-hosted-scan-image" -}}
+{{ include "container-registry" . }}portswigger/portswigger-hosted-scan:{{ include "image-tag" . }}
+{{- end -}}
+
+{{- define "relay-image" -}}
+{{ include "container-registry" . }}portswigger/relay:{{ include "image-tag" . }}
 {{- end -}}
 
 {{- define "kebabcase-release-name" -}}

@@ -23,19 +23,15 @@ webServerContainerCpu: 1400m
 webServerContainerMemory: 4Gi
 enterpriseServerContainerCpu: 1400m
 enterpriseServerContainerMemory: 4Gi
-connectionCheckContainerCpu: 1400m
-connectionCheckContainerMemory: 2Gi
 scanContainerCpu: 1400m
 scanContainerMemory: 8Gi
+scanControllerCpu: 500m
+scanControllerMemory: 512Mi
 
 services:
   webServer:
     installationEnvironment: KUBERNETES
     label: "app.portswigger.net/ingress: web-server"
-    # If set to true, then none of the configuration below will be used, and we will attempt to read the HTTP(S)
-    # configuration from the database. This should only be used if upgrading from v2023.6 or earlier. It has no effect
-    # when performing a helm install.
-    useDeprecatedHttpConfigFromDatabase: false
     useHttps: false
     httpPort: "8080"
     httpsPort: "8443"
@@ -45,6 +41,7 @@ services:
     httpsPassphraseSecret:
       name: bsee-web-server-https
       key: passphrase
+    skipTlsVerification: false
   enterpriseServer:
     installationEnvironment: KUBERNETES
 

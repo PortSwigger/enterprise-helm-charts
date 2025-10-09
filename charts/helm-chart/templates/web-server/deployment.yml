@@ -47,7 +47,7 @@ spec:
               value: "https://$({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_PORT)"
             - name: WEB_SERVER_OPTS
               value: -Xms1g -Xmx5g
-            {{ if and (.Values.services.webServer.useHttps) (not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase) }}
+            {{ if .Values.services.webServer.useHttps }}
             - name: BSEE_HTTPS_KEYSTORE_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -88,7 +88,7 @@ spec:
           volumeMounts:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite
-            {{ if and (.Values.services.webServer.useHttps) (not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase) }}
+            {{ if .Values.services.webServer.useHttps }}
             - name: {{ include "kebabcase-release-name" . }}-certificates
               mountPath: /home/burpsuite/certificates
             {{ end }}
@@ -134,7 +134,7 @@ spec:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:
             claimName: {{ .Values.persistentVolumeClaim }}
-        {{ if and (.Values.services.webServer.useHttps) (not .Values.services.webServer.useDeprecatedHttpConfigFromDatabase) }}
+        {{ if .Values.services.webServer.useHttps }}
         - name: {{ include "kebabcase-release-name" . }}-certificates
           secret:
             items:

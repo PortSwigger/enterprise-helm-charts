@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kebabcase-release-name" . }}-scan-controller-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: scan-controller
+    app.kubernetes.io/component: server
+{{ include "recommended-labels" . | indent 4 }}
+data:
+  BSEE_LOGS_DIRECTORY: "/home/burpsuite/logs"
+  BSEE_HOSTED_SCAN_JOB_TEMPLATE: |-
+{{ include "scanner-job-template" . | b64enc | indent 16}}
