@@ -40,7 +40,7 @@ spec:
             - name: BSEE_LOGS_DIRECTORY
               value: "/home/burpsuite/logs"
             - name: RELAY_TLS_SKIP_VERIFICATION
-              value: {{ .Values.services.webServer.skipTlsVerification | quote }}
+              value: {{ .Values.services.webServer.useHttps | quote }}
           envFrom:
             - secretRef:
                 name: {{ include "kebabcase-release-name" . }}-relay-shared-secret

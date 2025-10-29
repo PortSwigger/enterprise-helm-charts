@@ -38,7 +38,7 @@ spec:
             - name: BSEE_WEB_SERVER_URL
               value: "{{ if .Values.services.webServer.useHttps }}https://$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_PORT_HTTPS){{ else }}http://$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_PORT_HTTP){{ end }}"
             - name: BSEE_TLS_SKIP_VERIFICATION
-              value: {{ .Values.services.webServer.skipTlsVerification | quote }}
+              value: {{ .Values.services.webServer.useHttps | quote }}
           envFrom:
             - secretRef:
                 name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret

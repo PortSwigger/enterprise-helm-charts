@@ -41,7 +41,6 @@ services:
     httpsPassphraseSecret:
       name: bsee-web-server-https
       key: passphrase
-    skipTlsVerification: false
   enterpriseServer:
     installationEnvironment: KUBERNETES
 
