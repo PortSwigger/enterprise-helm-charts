@@ -48,16 +48,14 @@ spec:
               value: -Xms1g -Xmx5g
             - name: BSEE_BURP_JAVA_OPTS
               value: -Xms128m -Xmx512m
-            - name: BSEE_ENTERPRISE_SERVER_SERVICE_HOST
-              value: $({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_HOST)
-            - name: BSEE_ENTERPRISE_SERVER_SERVICE_PORT_EPHEMERAL_AGENT
-              value: $({{ include "screaming-snakecase-release-name" . }}_ENTERPRISE_SERVER_SERVICE_PORT_EPHEMERAL_AGENT)
 {{- include "bsee-container-registry-env" . | indent 12 }}
           envFrom:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
             - secretRef:
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-secret
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
           ports:
             - name: web-server-api
               containerPort: 8072

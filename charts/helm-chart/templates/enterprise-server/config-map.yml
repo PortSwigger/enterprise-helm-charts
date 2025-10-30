@@ -24,7 +24,3 @@ data:
   BSEE_DATA_PATH: /home/burpsuite/data
   BSEE_BURP_DOWNLOAD_PATH: /home/burpsuite/burp
   BSEE_LOGS_DIRECTORY: /home/burpsuite/logs
-  BSEE_SCAN_JOB_TEMPLATE: |-
-{{ include "scan-job-template" . | b64enc | indent 16}}
-  BSEE_CONNECTION_CHECK_JOB_TEMPLATE: |-
-{{ include "connection-check-job-template" . | b64enc | indent 16}}

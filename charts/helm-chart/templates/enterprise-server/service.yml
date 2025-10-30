@@ -14,6 +14,6 @@ spec:
     - name: https
       protocol: TCP
       port: 8072
-    - name: ephemeral-agent
+    - name: scan-controller
       protocol: TCP
       port: 8073

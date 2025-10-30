@@ -1,0 +1,54 @@
+{{- define "scanner-job-template" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app.kubernetes.io/component: scanner
+    app.kubernetes.io/part-of: {{ .Values.applicationName }}
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: scanner
+        app.kubernetes.io/part-of: {{ .Values.applicationName }}
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+{{ include "image-pull-secrets" . | indent 6 }}
+      serviceAccount: {{ include "kebabcase-release-name" . }}-scanner-service-account
+      serviceAccountName: {{ include "kebabcase-release-name" . }}-scanner-service-account
+      automountServiceAccountToken: false
+      containers:
+        - name: scan-container
+          image: {{ include "portswigger-hosted-scan-image" . }}
+          resources:
+            limits:
+              cpu: {{ .Values.scanContainerCpu }}
+              memory: {{ .Values.scanContainerMemory }}
+            requests:
+              cpu: {{ .Values.scanContainerCpu }}
+              memory: {{ .Values.scanContainerMemory }}
+          env:
+            - name: JAVA_OPTS
+              value: -Xms128m -Xmx512m
+            - name: BSEE_BURP_JAVA_OPTS
+              value: -Xms1g -XX:MaxRAMPercentage=75
+            - name: BSEE_WEB_SERVER_URL
+              value: "{{ if .Values.services.webServer.useHttps }}https://$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_PORT_HTTPS){{ else }}http://$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_HOST):$({{ include "screaming-snakecase-release-name" . }}_WEB_SERVER_SERVICE_PORT_HTTP){{ end }}"
+            - name: BSEE_TLS_SKIP_VERIFICATION
+              value: {{ .Values.services.webServer.useHttps | quote }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+          volumeMounts:
+            - name: {{ include "kebabcase-release-name" . }}-volume
+              mountPath: /home/burpsuite
+      volumes:
+        - name: {{ include "kebabcase-release-name" . }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolumeClaim }}
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+{{- end -}}
