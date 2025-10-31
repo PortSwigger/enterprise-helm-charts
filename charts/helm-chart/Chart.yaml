@@ -17,3 +17,4 @@ sources:
 - https://github.com/portswigger/enterprise-helm-charts/
 type: application
 version: 2025.10.0
+# A small change
