@@ -75,7 +75,6 @@ spec:
               path: /health/liveness
             periodSeconds: 10
             failureThreshold: 3
-            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               port: management-api
