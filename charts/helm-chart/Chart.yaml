@@ -1,19 +1,19 @@
 apiVersion: v2
-appVersion: 2025.12-24435
-description: A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the
-  release notes at https://portswigger.net/burp/releases/dast-2025-12.
+appVersion: 2026.1-24932
+description: A Helm chart to create the k8s cluster dependencies for BSEE. See the
+  release notes at https://portswigger.net/burp/releases/enterprise-edition-2025-12-0.
 home: https://portswigger.net/
-icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/81da282cb1ab8d9f348de686d5bbb1a35aa1bb7e/charts/helm-chart/dast-logo.svg
+icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/33292500f49f9d9ddef2d22d3a53b13f3210674e/enterprise-logo.svg
 keywords:
 - burpsuite
 - dast
 - security
 - web
 maintainers:
-- email: support@portswigger.net
+- email: hello@portswigger.net
   name: Portswigger
 name: burp-suite-enterprise-edition
 sources:
 - https://github.com/portswigger/enterprise-helm-charts/
 type: application
-version: 2025.12.0
+version: 2026.1.0
