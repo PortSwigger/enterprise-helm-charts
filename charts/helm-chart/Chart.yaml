@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: 2026.1-24932
+appVersion: 2026.2-25329
 description: A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the
-  release notes at https://portswigger.net/burp/releases/dast-2026-1.
+  release notes at https://portswigger.net/burp/releases/dast-2026-1-0.
 home: https://portswigger.net/
 icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/81da282cb1ab8d9f348de686d5bbb1a35aa1bb7e/dast-logo.svg
 keywords:
@@ -16,4 +16,4 @@ name: burp-suite-enterprise-edition
 sources:
 - https://github.com/portswigger/enterprise-helm-charts/
 type: application
-version: 2026.1.0
+version: 2026.2.0
