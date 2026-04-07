@@ -44,6 +44,25 @@ services:
   enterpriseServer:
     installationEnvironment: KUBERNETES
 
+# -- Pod security context applied to all DAST deployments
+podSecurityContext:
+  runAsUser: 42877
+  runAsGroup: 42877
+  fsGroup: 42877
+  # -- Policy for changing ownership of the volume. Set to "Always" for environments
+  # with SELinux enforcing (e.g. Bottlerocket) where init containers need PVC write access.
+  fsGroupChangePolicy: OnRootMismatch
+
+# -- Affinity rules applied to all DAST deployments.
+# Use this to co-locate pods on the same node when using a ReadWriteOnce PVC.
+affinity: {}
+
+# -- Node selector applied to all DAST deployments
+nodeSelector: {}
+
+# -- Tolerations applied to all DAST deployments
+tolerations: []
+
 database:
   # -- JDBC connection URL for the database
   url: ""
