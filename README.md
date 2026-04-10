@@ -15,7 +15,7 @@ helm install ${RELEASE_NAME} bsee/burp-suite-enterprise-edition \
    --set database.enterpriseServerConnectionUsername=${DATABASE_ENTERPRISE_SERVER_CONNECTION_USERNAME} \
    --set database.enterpriseServerPassword=${DATABASE_ENTERPRISE_SERVER_PASSWORD} \
    --set database.scanningResourceUsername=${DATABASE_SCANNING_RESOURCE_USERNAME} \
-   --set database.scanningResourceConnectionUsername=${DATABASE_SCANNING_RESOURCE_CONNECTION_USERNAME}
+   --set database.scanningResourceConnectionUsername=${DATABASE_SCANNING_RESOURCE_CONNECTION_USERNAME} \
    --set database.scanningResourcePassword=${DATABASE_SCANNING_RESOURCE_PASSWORD}
 ```
 
