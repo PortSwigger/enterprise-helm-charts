@@ -24,7 +24,7 @@ jobs:
             registry-1.docker.io
           disable-sudo: true
       - name: 'Checkout Helm chart'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: 'Make reports directory'
         run: mkdir -p reports
       - id: kics
@@ -46,7 +46,7 @@ jobs:
         run: |
           cat reports/results.json
       - name: 'Upload reports'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Kics report
           path: ./reports/
@@ -59,7 +59,7 @@ jobs:
 #
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@v4
+#        uses: actions/checkout@v5
 #        with:
 #          fetch-depth: 0
 #      - name: Configure Git
