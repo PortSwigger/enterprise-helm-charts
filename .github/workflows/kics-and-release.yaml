@@ -28,7 +28,7 @@ jobs:
         run: |
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/path" \
-            ghcr.io/checkmarx/kics:latest \
+            checkmarx/kics:latest \
             scan \
             -p /path/charts/helm-chart \
             -o /path/reports \
