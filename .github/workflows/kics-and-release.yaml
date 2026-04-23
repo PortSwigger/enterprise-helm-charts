@@ -19,7 +19,6 @@ jobs:
         with:
           mode: analyze
           disable-sudo: true
-          disable-docker: true
       - name: 'Checkout Helm chart'
         uses: actions/checkout@v4
       - name: 'Make reports directory'
