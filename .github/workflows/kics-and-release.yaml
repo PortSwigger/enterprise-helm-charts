@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: portswigger-tim/safer-runner-action@v1
         with:
-          mode: analyze
+          mode: enforce
           disable-sudo: true
       - name: 'Checkout Helm chart'
         uses: actions/checkout@v4
