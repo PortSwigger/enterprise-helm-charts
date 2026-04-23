@@ -17,7 +17,11 @@ jobs:
     steps:
       - uses: portswigger-tim/safer-runner-action@v1
         with:
-          mode: analyze
+          mode: enforce
+          allowed-domains: |
+            auth.docker.io
+            production.cloudflare.docker.com
+            registry-1.docker.io
           disable-sudo: true
       - name: 'Checkout Helm chart'
         uses: actions/checkout@v4
