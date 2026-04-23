@@ -51,26 +51,26 @@ jobs:
           name: Kics report
           path: ./reports/
 
-#  release-job:
-#    needs: kics-job
-#    permissions:
-#      contents: write
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v5
-#        with:
-#          fetch-depth: 0
-#      - name: Configure Git
-#        run: |
-#          git config user.name "$GITHUB_ACTOR"
-#          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-#      - name: Install Helm
-#        uses: azure/setup-helm@v3
-#      - name: Release
-#        if: ${{ github.ref == 'refs/heads/main' }}
-#        uses: helm/chart-releaser-action@v1.6.0
-#        env:
-#          CR_SKIP_EXISTING: "true"
-#          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  release-job:
+    needs: kics-job
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+      - name: Release
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_SKIP_EXISTING: "true"
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
