@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "services": {
+      "type": "object",
+      "properties": {
+        "webServer": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            },
+            "type": {
+              "type": "string",
+              "enum": ["", "ClusterIP", "LoadBalancer", "NodePort"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

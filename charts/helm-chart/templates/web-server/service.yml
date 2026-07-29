@@ -3,11 +3,18 @@ kind: Service
 metadata:
   name: {{ include "kebabcase-release-name" . }}-web-server
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.services.webServer.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: web-server
     app.kubernetes.io/component: server
 {{ include "recommended-labels" . | indent 4 }}
 spec:
+  {{- with .Values.services.webServer.type }}
+  type: {{ . }}
+  {{- end }}
   selector:
     app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-web-server
   ports:

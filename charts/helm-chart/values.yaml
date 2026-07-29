@@ -41,6 +41,11 @@ services:
     httpsPassphraseSecret:
       name: bsee-web-server-https
       key: passphrase
+    # -- Annotations added to the web-server Service, e.g. cloud load-balancer annotations
+    annotations: {}
+    # -- Kubernetes Service type for the web-server Service ("ClusterIP", "LoadBalancer" or "NodePort").
+    # Uses the cluster default (ClusterIP) when unset.
+    type: ""
   enterpriseServer:
     installationEnvironment: KUBERNETES
 
