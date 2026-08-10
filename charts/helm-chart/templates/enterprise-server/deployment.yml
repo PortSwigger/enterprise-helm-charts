@@ -53,7 +53,11 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
             - secretRef:
+              {{ if .Values.services.enterpriseServer.existingSecret }}
+                name: {{ .Values.services.enterpriseServer.existingSecret }}
+              {{ else }}
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-secret
+              {{ end }}
             - secretRef:
                 name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
           ports:
@@ -136,7 +140,11 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-config
             - secretRef:
+              {{ if .Values.services.enterpriseServer.existingSecret }}
+                name: {{ .Values.services.enterpriseServer.existingSecret }}
+              {{ else }}
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-secret
+              {{ end }}
           command:
             - 'sh'
             - '-c'
