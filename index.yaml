@@ -2,6 +2,29 @@ apiVersion: v1
 entries:
   burp-suite-enterprise-edition:
   - apiVersion: v2
+    appVersion: 2026.8.1-30491
+    created: "2026-08-13T14:34:03.509198383Z"
+    description: A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See
+      the release notes at https://portswigger.net/burp/releases/dast-2026-8-1.
+    digest: 5c5fb45a67cb45498547cc39416d063c925143522e41f241313c32ea179f7bb6
+    home: https://portswigger.net/
+    icon: https://github.com/PortSwigger/enterprise-helm-charts/blob/81da282cb1ab8d9f348de686d5bbb1a35aa1bb7e/dast-logo.svg
+    keywords:
+    - burpsuite
+    - dast
+    - security
+    - web
+    maintainers:
+    - email: support@portswigger.net
+      name: Portswigger
+    name: burp-suite-enterprise-edition
+    sources:
+    - https://github.com/portswigger/enterprise-helm-charts/
+    type: application
+    urls:
+    - https://github.com/PortSwigger/enterprise-helm-charts/releases/download/burp-suite-enterprise-edition-2026.8.1/burp-suite-enterprise-edition-2026.8.1.tgz
+    version: 2026.8.1
+  - apiVersion: v2
     appVersion: 2026.8-30375
     created: "2026-08-05T08:15:51.505310969Z"
     description: A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See
@@ -1147,4 +1170,4 @@ entries:
     urls:
     - https://github.com/PortSwigger/enterprise-helm-charts/releases/download/burp-suite-enterprise-edition-1.0.0/burp-suite-enterprise-edition-1.0.0.tgz
     version: 1.0.0
-generated: "2026-08-05T08:15:51.505468263Z"
+generated: "2026-08-13T14:34:03.509373855Z"
