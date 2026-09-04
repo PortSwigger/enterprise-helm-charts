@@ -32,6 +32,9 @@ services:
   webServer:
     installationEnvironment: KUBERNETES
     label: "app.portswigger.net/ingress: web-server"
+    # -- Name of a Secret containing the same keys as the chart-managed web server Secret.
+    # Disables creation of the chart-managed web server Secret when set.
+    existingSecret: ""
     useHttps: false
     httpPort: "8080"
     httpsPort: "8443"
@@ -48,6 +51,9 @@ services:
     type: ""
   enterpriseServer:
     installationEnvironment: KUBERNETES
+    # -- Name of a Secret containing the same keys as the chart-managed enterprise server Secret.
+    # Disables creation of the chart-managed enterprise server Secret when set.
+    existingSecret: ""
 
 database:
   # -- JDBC connection URL for the database

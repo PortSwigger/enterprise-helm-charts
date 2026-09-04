@@ -59,7 +59,11 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
+              {{ if .Values.services.webServer.existingSecret }}
+                name: {{ .Values.services.webServer.existingSecret }}
+              {{ else }}
                 name: {{ include "kebabcase-release-name" . }}-web-server-secret
+              {{ end }}
           ports:
             - containerPort: 8080
               name: http
@@ -112,7 +116,11 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
+              {{ if .Values.services.webServer.existingSecret }}
+                name: {{ .Values.services.webServer.existingSecret }}
+              {{ else }}
                 name: {{ include "kebabcase-release-name" . }}-web-server-secret
+              {{ end }}
           command:
             - 'sh'
             - '-c'
