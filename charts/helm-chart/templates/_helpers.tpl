@@ -77,3 +77,17 @@ imagePullSecrets:
 {{- define "web-server-secret-name" -}}
 {{- .Values.services.webServer.existingSecret | default (printf "%s-web-server-secret" (include "kebabcase-release-name" .)) -}}
 {{- end -}}
+
+{{- define "security-context" -}}
+{{- $merged := mergeOverwrite (deepCopy .base) .values -}}
+{{- $nullKeys := list -}}
+{{- range $key, $val := $merged -}}
+{{- if kindIs "invalid" $val -}}
+{{- $nullKeys = append $nullKeys $key -}}
+{{- end -}}
+{{- end -}}
+{{- range $nullKeys -}}
+{{- $_ := unset $merged . -}}
+{{- end -}}
+{{- toYaml $merged -}}
+{{- end -}}

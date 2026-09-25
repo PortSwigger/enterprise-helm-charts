@@ -2,6 +2,8 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "podSecurityContext": { "type": "object" },
+    "containerSecurityContext": { "type": "object" },
     "services": {
       "type": "object",
       "properties": {
