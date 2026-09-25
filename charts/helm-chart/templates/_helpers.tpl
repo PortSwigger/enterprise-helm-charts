@@ -61,3 +61,11 @@ imagePullSecrets:
 {{- define "screaming-snakecase-release-name" -}}
 {{- snakecase .Release.Name | replace " " "_" | replace "." "_" | replace "-" "_" | upper -}}
 {{- end -}}
+
+{{- define "scanning-shared-secret-name" -}}
+{{- .Values.scanningSharedSecret.existingSecret | default (printf "%s-scanning-shared-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
+
+{{- define "relay-shared-secret-name" -}}
+{{- .Values.relaySharedSecret.existingSecret | default (printf "%s-relay-shared-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}

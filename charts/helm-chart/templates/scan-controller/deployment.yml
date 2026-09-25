@@ -53,9 +53,9 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-scan-controller-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+                name: {{ include "scanning-shared-secret-name" . }}
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-relay-shared-secret
+                name: {{ include "relay-shared-secret-name" . }}
           ports:
             - name: management-api
               containerPort: 8078
