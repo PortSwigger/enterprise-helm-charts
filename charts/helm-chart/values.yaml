@@ -46,8 +46,15 @@ services:
     # -- Kubernetes Service type for the web-server Service ("ClusterIP", "LoadBalancer" or "NodePort").
     # Uses the cluster default (ClusterIP) when unset.
     type: ""
+    # -- Existing Secret to use instead of the chart-managed web server Secret.
+    # Must contain BSEE_CLIENT_KEYSTORE_PASSWORD and BSEE_CLIENT_TRUSTSTORE_PASSWORD.
+    existingSecret: ""
   enterpriseServer:
     installationEnvironment: KUBERNETES
+    # -- Existing Secret to use instead of the chart-managed DAST server Secret. Must contain
+    # BSEE_HTTPS_KEYSTORE_PASSWORD, BSEE_ADMIN_REPOSITORY_* and BSEE_AGENT_REPOSITORY_* (optionally
+    # *_CONNECTION_USERNAME). The database.* username/password values are ignored when set.
+    existingSecret: ""
 
 scanningSharedSecret:
   # -- Name of an existing Secret containing the key BSEE_HOSTED_SCANNING_MACHINE_API_KEY.

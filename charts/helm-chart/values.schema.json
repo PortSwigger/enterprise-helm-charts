@@ -15,7 +15,14 @@
             "type": {
               "type": "string",
               "enum": ["", "ClusterIP", "LoadBalancer", "NodePort"]
-            }
+            },
+            "existingSecret": { "type": "string" }
+          }
+        },
+        "enterpriseServer": {
+          "type": "object",
+          "properties": {
+            "existingSecret": { "type": "string" }
           }
         }
       }

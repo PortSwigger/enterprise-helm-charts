@@ -69,3 +69,11 @@ imagePullSecrets:
 {{- define "relay-shared-secret-name" -}}
 {{- .Values.relaySharedSecret.existingSecret | default (printf "%s-relay-shared-secret" (include "kebabcase-release-name" .)) -}}
 {{- end -}}
+
+{{- define "enterprise-server-secret-name" -}}
+{{- .Values.services.enterpriseServer.existingSecret | default (printf "%s-enterprise-server-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
+
+{{- define "web-server-secret-name" -}}
+{{- .Values.services.webServer.existingSecret | default (printf "%s-web-server-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
