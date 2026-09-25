@@ -41,7 +41,7 @@ spec:
               value: {{ .Values.services.webServer.useHttps | quote }}
           envFrom:
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+                name: {{ include "scanning-shared-secret-name" . }}
           volumeMounts:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite

@@ -49,6 +49,16 @@ services:
   enterpriseServer:
     installationEnvironment: KUBERNETES
 
+scanningSharedSecret:
+  # -- Name of an existing Secret containing the key BSEE_HOSTED_SCANNING_MACHINE_API_KEY.
+  # When set, the chart does not create or regenerate the scanning shared secret, e.g. for GitOps tools that render with `helm template`.
+  existingSecret: ""
+
+relaySharedSecret:
+  # -- Name of an existing Secret containing the keys RELAY_SECRET and BSEE_REQUEST_RELAY_SECRET, both set to the same value.
+  # When set, the chart does not create or regenerate the relay shared secret, e.g. for GitOps tools that render with `helm template`.
+  existingSecret: ""
+
 database:
   # -- JDBC connection URL for the database
   url: ""

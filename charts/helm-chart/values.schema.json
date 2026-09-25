@@ -19,6 +19,18 @@
           }
         }
       }
+    },
+    "scanningSharedSecret": {
+      "type": "object",
+      "properties": {
+        "existingSecret": { "type": "string" }
+      }
+    },
+    "relaySharedSecret": {
+      "type": "object",
+      "properties": {
+        "existingSecret": { "type": "string" }
+      }
     }
   }
 }

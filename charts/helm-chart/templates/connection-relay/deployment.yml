@@ -43,7 +43,7 @@ spec:
               value: {{ .Values.services.webServer.useHttps | quote }}
           envFrom:
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-relay-shared-secret
+                name: {{ include "relay-shared-secret-name" . }}
           resources:
             requests:
               cpu: 200m

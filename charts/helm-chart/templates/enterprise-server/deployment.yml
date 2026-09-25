@@ -55,7 +55,7 @@ spec:
             - secretRef:
                 name: {{ include "kebabcase-release-name" . }}-enterprise-server-secret
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+                name: {{ include "scanning-shared-secret-name" . }}
           ports:
             - name: web-server-api
               containerPort: 8072
