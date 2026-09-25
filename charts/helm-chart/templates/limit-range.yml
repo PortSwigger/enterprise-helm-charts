@@ -1,3 +1,4 @@
+{{- if .Values.limitRange.enabled }}
 apiVersion: v1
 kind: LimitRange
 metadata:
@@ -18,3 +19,4 @@ spec:
         cpu: {{ .Values.defaultRequestCpuPerContainer }}
         memory: {{ .Values.defaultRequestMemoryPerContainer }}
       type: Container
+{{- end }}
