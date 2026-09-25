@@ -9,6 +9,20 @@ persistentVolumeClaim: bsee-pvc
 containerRegistry: "public.ecr.aws"
 imagePullSecrets: []
 
+# -- Pod-level securityContext for all DAST deployments. Set a field to null to remove it,
+podSecurityContext:
+  runAsUser: 42877
+  runAsGroup: 42877
+  fsGroup: 42877
+  fsGroupChangePolicy: OnRootMismatch
+# -- Container-level securityContext for all DAST containers and init containers.
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  runAsUser: 42877
+  capabilities:
+    drop:
+      - ALL
+
 maxCpuPerContainer: 4000m
 minCpuPerContainer: 100m
 defaultCpuPerContainer: 100m
