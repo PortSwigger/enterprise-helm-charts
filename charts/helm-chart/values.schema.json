@@ -4,6 +4,12 @@
   "properties": {
     "podSecurityContext": { "type": "object" },
     "containerSecurityContext": { "type": "object" },
+    "limitRange": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
     "services": {
       "type": "object",
       "properties": {
