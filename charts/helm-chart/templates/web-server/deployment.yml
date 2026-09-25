@@ -59,7 +59,7 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+                name: {{ include "web-server-secret-name" . }}
           ports:
             - containerPort: 8080
               name: http
@@ -112,7 +112,7 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+                name: {{ include "web-server-secret-name" . }}
           command:
             - 'sh'
             - '-c'
