@@ -57,6 +57,15 @@ spec:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
                 name: {{ include "web-server-secret-name" . }}
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              mkdir -p /home/burpsuite/keystores &&
+              mkdir -p /home/burpsuite/logs &&
+              mkdir -p /home/burpsuite/burp &&
+              /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD &&
+              exec sh /usr/local/burpsuite_enterprise/bin/web-server
           ports:
             - containerPort: 8080
               name: http
@@ -89,34 +98,6 @@ spec:
             - name: {{ include "kebabcase-release-name" . }}-certificates
               mountPath: /home/burpsuite/certificates
             {{ end }}
-          securityContext:
-{{ include "security-context" (dict "base" (dict) "values" .Values.containerSecurityContext) | indent 12 }}
-      initContainers:
-        - name: init-web-server-keystore
-          image: {{ include "web-server-image" . }}
-          resources:
-            limits:
-              cpu: 250m
-              memory: {{ .Values.maxMemoryPerContainer }}
-            requests:
-              cpu: 250m
-              memory: 250Mi
-          envFrom:
-            - configMapRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-config
-            - secretRef:
-                name: {{ include "web-server-secret-name" . }}
-          command:
-            - 'sh'
-            - '-c'
-            - |
-              mkdir -p /home/burpsuite/keystores &&
-              mkdir -p /home/burpsuite/logs &&
-              mkdir -p /home/burpsuite/burp &&
-              /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD
-          volumeMounts:
-            - name: {{ include "kebabcase-release-name" . }}-volume
-              mountPath: /home/burpsuite
           securityContext:
 {{ include "security-context" (dict "base" (dict) "values" .Values.containerSecurityContext) | indent 12 }}
       volumes:
