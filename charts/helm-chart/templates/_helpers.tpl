@@ -61,3 +61,33 @@ imagePullSecrets:
 {{- define "screaming-snakecase-release-name" -}}
 {{- snakecase .Release.Name | replace " " "_" | replace "." "_" | replace "-" "_" | upper -}}
 {{- end -}}
+
+{{- define "scanning-shared-secret-name" -}}
+{{- .Values.scanningSharedSecret.existingSecret | default (printf "%s-scanning-shared-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
+
+{{- define "relay-shared-secret-name" -}}
+{{- .Values.relaySharedSecret.existingSecret | default (printf "%s-relay-shared-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
+
+{{- define "enterprise-server-secret-name" -}}
+{{- .Values.services.enterpriseServer.existingSecret | default (printf "%s-enterprise-server-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
+
+{{- define "web-server-secret-name" -}}
+{{- .Values.services.webServer.existingSecret | default (printf "%s-web-server-secret" (include "kebabcase-release-name" .)) -}}
+{{- end -}}
+
+{{- define "security-context" -}}
+{{- $merged := mergeOverwrite (deepCopy .base) .values -}}
+{{- $nullKeys := list -}}
+{{- range $key, $val := $merged -}}
+{{- if kindIs "invalid" $val -}}
+{{- $nullKeys = append $nullKeys $key -}}
+{{- end -}}
+{{- end -}}
+{{- range $nullKeys -}}
+{{- $_ := unset $merged . -}}
+{{- end -}}
+{{- toYaml $merged -}}
+{{- end -}}

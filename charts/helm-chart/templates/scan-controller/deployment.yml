@@ -27,11 +27,7 @@ spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-scan-controller-service-account
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 42877
-        runAsGroup: 42877
-        fsGroup: 42877
-        fsGroupChangePolicy: OnRootMismatch
+{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "values" .Values.podSecurityContext) | indent 8 }}
       containers:
         - name: scan-controller
           image: {{ include "scan-controller-image" . }}
@@ -53,9 +49,9 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-scan-controller-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+                name: {{ include "scanning-shared-secret-name" . }}
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-relay-shared-secret
+                name: {{ include "relay-shared-secret-name" . }}
           ports:
             - name: management-api
               containerPort: 8078
@@ -81,12 +77,7 @@ spec:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 42877
-            capabilities:
-              drop:
-                - ALL
+{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "values" .Values.containerSecurityContext) | indent 12 }}
       volumes:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:

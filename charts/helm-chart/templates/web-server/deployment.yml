@@ -26,10 +26,7 @@ spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-web-server-service-account
       securityContext:
-        runAsUser: 42877
-        runAsGroup: 42877
-        fsGroup: 42877
-        fsGroupChangePolicy: OnRootMismatch
+{{ include "security-context" (dict "base" (dict) "values" .Values.podSecurityContext) | indent 8 }}
       containers:
         - name: web-server
           image: {{ include "web-server-image" . }}
@@ -59,7 +56,16 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+                name: {{ include "web-server-secret-name" . }}
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              mkdir -p /home/burpsuite/keystores &&
+              mkdir -p /home/burpsuite/logs &&
+              mkdir -p /home/burpsuite/burp &&
+              /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD &&
+              exec sh /usr/local/burpsuite_enterprise/bin/web-server
           ports:
             - containerPort: 8080
               name: http
@@ -93,43 +99,7 @@ spec:
               mountPath: /home/burpsuite/certificates
             {{ end }}
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 42877
-            capabilities:
-              drop:
-                - ALL
-      initContainers:
-        - name: init-web-server-keystore
-          image: {{ include "web-server-image" . }}
-          resources:
-            limits:
-              cpu: 250m
-              memory: {{ .Values.maxMemoryPerContainer }}
-            requests:
-              cpu: 250m
-              memory: 250Mi
-          envFrom:
-            - configMapRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-config
-            - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-secret
-          command:
-            - 'sh'
-            - '-c'
-            - |
-              mkdir -p /home/burpsuite/keystores &&
-              mkdir -p /home/burpsuite/logs &&
-              mkdir -p /home/burpsuite/burp &&
-              /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD
-          volumeMounts:
-            - name: {{ include "kebabcase-release-name" . }}-volume
-              mountPath: /home/burpsuite
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 42877
-            capabilities:
-              drop:
-                - ALL
+{{ include "security-context" (dict "base" (dict) "values" .Values.containerSecurityContext) | indent 12 }}
       volumes:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:
