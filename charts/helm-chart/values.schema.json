@@ -2,6 +2,14 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "podSecurityContext": { "type": "object" },
+    "containerSecurityContext": { "type": "object" },
+    "limitRange": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
     "services": {
       "type": "object",
       "properties": {
@@ -15,9 +23,28 @@
             "type": {
               "type": "string",
               "enum": ["", "ClusterIP", "LoadBalancer", "NodePort"]
-            }
+            },
+            "existingSecret": { "type": "string" }
+          }
+        },
+        "enterpriseServer": {
+          "type": "object",
+          "properties": {
+            "existingSecret": { "type": "string" }
           }
         }
+      }
+    },
+    "scanningSharedSecret": {
+      "type": "object",
+      "properties": {
+        "existingSecret": { "type": "string" }
+      }
+    },
+    "relaySharedSecret": {
+      "type": "object",
+      "properties": {
+        "existingSecret": { "type": "string" }
       }
     }
   }
