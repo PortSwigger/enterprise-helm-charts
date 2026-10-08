@@ -47,8 +47,10 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | scanContainerMemory | string | `"8Gi"` |  |
 | scanControllerCpu | string | `"500m"` |  |
 | scanControllerMemory | string | `"512Mi"` |  |
+| services.enterpriseServer.existingSecret | string | `""` | Name of a Secret containing the same keys as the chart-managed enterprise server Secret. Disables creation of the chart-managed enterprise server Secret when set. |
 | services.enterpriseServer.installationEnvironment | string | `"KUBERNETES"` |  |
 | services.webServer.annotations | object | `{}` | Annotations added to the web-server Service, e.g. cloud load-balancer annotations |
+| services.webServer.existingSecret | string | `""` | Name of a Secret containing the same keys as the chart-managed web server Secret. Disables creation of the chart-managed web server Secret when set. |
 | services.webServer.httpPort | string | `"8080"` |  |
 | services.webServer.httpsCertificateSecret.key | string | `"certificate"` |  |
 | services.webServer.httpsCertificateSecret.name | string | `"bsee-web-server-https"` |  |
