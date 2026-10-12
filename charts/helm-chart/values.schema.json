@@ -14,6 +14,13 @@
     },
     "podSecurityContext": { "type": "object" },
     "containerSecurityContext": { "type": "object" },
+    "scanner": {
+      "type": "object",
+      "properties": {
+        "podSecurityContext": { "type": "object" },
+        "containerSecurityContext": { "type": "object" }
+      }
+    },
     "limitRange": {
       "type": "object",
       "properties": {

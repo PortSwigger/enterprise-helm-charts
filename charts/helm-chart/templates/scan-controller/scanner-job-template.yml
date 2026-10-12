@@ -1,4 +1,5 @@
 {{- define "scanner-job-template" -}}
+{{- $scanner := default dict .Values.scanner -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -20,6 +21,10 @@ spec:
       serviceAccount: {{ include "kebabcase-release-name" . }}-scanner-service-account
       serviceAccountName: {{ include "kebabcase-release-name" . }}-scanner-service-account
       automountServiceAccountToken: false
+      {{- with $scanner.podSecurityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
         - name: scan-container
           image: {{ include "portswigger-hosted-scan-image" . }}
@@ -45,6 +50,10 @@ spec:
           volumeMounts:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite
+          {{- with $scanner.containerSecurityContext }}
+          securityContext:
+{{ toYaml . | indent 12 }}
+          {{- end }}
       volumes:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:

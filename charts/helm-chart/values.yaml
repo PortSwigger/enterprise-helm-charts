@@ -23,13 +23,19 @@ podSecurityContext:
   runAsGroup: 42877
   fsGroup: 42877
   fsGroupChangePolicy: OnRootMismatch
-# -- Container-level securityContext for all DAST containers and init containers.
+# -- Container-level securityContext for DAST deployments and their init containers.
 containerSecurityContext:
   allowPrivilegeEscalation: false
   runAsUser: 42877
   capabilities:
     drop:
       - ALL
+
+scanner:
+  # -- Pod-level securityContext for scanner Jobs.
+  podSecurityContext: {}
+  # -- Container-level securityContext for scanner Jobs.
+  containerSecurityContext: {}
 
 maxCpuPerContainer: 4000m
 minCpuPerContainer: 100m
