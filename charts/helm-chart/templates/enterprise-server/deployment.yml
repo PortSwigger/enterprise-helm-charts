@@ -21,8 +21,7 @@ spec:
         app.kubernetes.io/name: enterprise-server
         app.kubernetes.io/component: server
 {{ include "recommended-labels" . | indent 8 }}
-      annotations:
-        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+{{ include "pod-annotations" (dict "context" . "base" (dict "seccomp.security.alpha.kubernetes.io/defaultProfileName" "runtime/default")) | indent 6 }}
     spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-enterprise-server-service-account
@@ -129,7 +128,13 @@ spec:
           command:
             - 'sh'
             - '-c'
+            {{- if .Values.services.enterpriseServer.existingSecret }}
+            - |
+{{ include "validate-keystore-password" "BSEE_HTTPS_KEYSTORE_PASSWORD" | indent 14 }}
+              /usr/local/burpsuite_enterprise/bin/createKeystore es "$BSEE_HTTPS_KEYSTORE_LOCATION" "$BSEE_HTTPS_KEYSTORE_PASSWORD"
+            {{- else }}
             - '/usr/local/burpsuite_enterprise/bin/createKeystore es $BSEE_HTTPS_KEYSTORE_LOCATION $BSEE_HTTPS_KEYSTORE_PASSWORD'
+            {{- end }}
           volumeMounts:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite

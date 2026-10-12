@@ -21,8 +21,7 @@ spec:
         app.kubernetes.io/name: scan-controller
         app.kubernetes.io/component: server
 {{ include "recommended-labels" . | indent 8 }}
-      annotations:
-        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+{{ include "pod-annotations" (dict "context" . "base" (dict "seccomp.security.alpha.kubernetes.io/defaultProfileName" "runtime/default")) | indent 6 }}
     spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-scan-controller-service-account

@@ -2,6 +2,16 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "podAnnotations": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "gitOps": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
     "podSecurityContext": { "type": "object" },
     "containerSecurityContext": { "type": "object" },
     "limitRange": {
@@ -23,6 +33,10 @@
             "type": {
               "type": "string",
               "enum": ["", "ClusterIP", "LoadBalancer", "NodePort"]
+            },
+            "strategy": {
+              "type": "string",
+              "enum": ["", "RollingUpdate", "Recreate"]
             },
             "existingSecret": { "type": "string" }
           }

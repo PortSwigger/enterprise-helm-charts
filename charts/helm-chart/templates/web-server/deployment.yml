@@ -9,6 +9,10 @@ metadata:
 {{ include "recommended-labels" . | indent 4 }}
 spec:
   replicas: 1
+{{- with .Values.services.webServer.strategy }}
+  strategy:
+    type: {{ . }}
+{{- end }}
   selector:
     matchLabels:
       app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-web-server
@@ -20,8 +24,7 @@ spec:
         app.kubernetes.io/component: server
 {{ include "recommended-labels" . | indent 8 }}
 {{ include "ingress-label" . | indent 8 }}
-      annotations:
-        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+{{ include "pod-annotations" (dict "context" . "base" (dict "seccomp.security.alpha.kubernetes.io/defaultProfileName" "runtime/default")) | indent 6 }}
     spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-web-server-service-account
@@ -110,10 +113,21 @@ spec:
             - 'sh'
             - '-c'
             - |
+              {{- if .Values.services.webServer.existingSecret }}
+{{ include "validate-keystore-password" "BSEE_CLIENT_KEYSTORE_PASSWORD" | indent 14 }}
+              if [ "$BSEE_CLIENT_KEYSTORE_PASSWORD" != "$BSEE_CLIENT_TRUSTSTORE_PASSWORD" ]; then
+                echo "BSEE_CLIENT_KEYSTORE_PASSWORD and BSEE_CLIENT_TRUSTSTORE_PASSWORD must match." >&2
+                exit 1
+              fi
+              {{- end }}
               mkdir -p /home/burpsuite/keystores &&
               mkdir -p /home/burpsuite/logs &&
               mkdir -p /home/burpsuite/burp &&
+              {{- if .Values.services.webServer.existingSecret }}
+              /usr/local/burpsuite_enterprise/bin/createKeystore webserver "$BSEE_CLIENT_KEYSTORE_LOCATION" "$BSEE_CLIENT_KEYSTORE_PASSWORD"
+              {{- else }}
               /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD
+              {{- end }}
           volumeMounts:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite

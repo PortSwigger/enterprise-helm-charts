@@ -89,6 +89,28 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
+{{- define "pod-annotations" -}}
+{{- $annotations := mergeOverwrite (deepCopy .base) (default dict .context.Values.podAnnotations) -}}
+{{- if $annotations -}}
+annotations:
+{{ toYaml $annotations | indent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- define "validate-keystore-password" -}}
+keystore_password=${{ . }}
+case "$keystore_password" in
+  ''|*[!A-Za-z0-9]*)
+    echo "{{ . }} must contain only ASCII letters and digits." >&2
+    exit 1
+    ;;
+esac
+if [ "${#keystore_password}" -lt 6 ]; then
+  echo "{{ . }} must contain at least six characters." >&2
+  exit 1
+fi
+{{- end -}}
+
 {{- define "security-context" -}}
 {{- $defaults := dict
     "podSecurityContext" (dict "runAsUser" 42877 "runAsGroup" 42877 "fsGroup" 42877 "fsGroupChangePolicy" "OnRootMismatch")
