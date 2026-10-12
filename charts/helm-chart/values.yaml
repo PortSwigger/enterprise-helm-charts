@@ -17,7 +17,7 @@ gitOps:
   # -- Require all four existingSecret settings to avoid random Secrets during offline rendering.
   enabled: false
 
-# -- Pod-level securityContext for all DAST deployments. Set a field to null to remove it,
+# -- Pod-level securityContext for all DAST deployments. Set a field to null to remove it.
 podSecurityContext:
   runAsUser: 42877
   runAsGroup: 42877

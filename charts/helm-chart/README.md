@@ -1,8 +1,8 @@
 # burp-suite-enterprise-edition
 
-![Version: 2026.6.0](https://img.shields.io/badge/Version-2026.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2026.6-28973](https://img.shields.io/badge/AppVersion-2026.6--28973-informational?style=flat-square)
+![Version: 2026.9.0](https://img.shields.io/badge/Version-2026.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2026.9-30775](https://img.shields.io/badge/AppVersion-2026.9--30775-informational?style=flat-square)
 
-A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release notes at https://portswigger.net/burp/releases/dast-2026-6.
+A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release notes at https://portswigger.net/burp/releases/dast-2026-9.
 
 **Homepage:** <https://portswigger.net/>
 
@@ -22,6 +22,7 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 |-----|------|---------|-------------|
 | applicationName | string | `"bsee"` |  |
 | containerRegistry | string | `"public.ecr.aws"` | The container registry used to get the DAST images |
+| containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsUser":42877}` | Container-level securityContext for DAST deployments and their init containers. |
 | database.enterpriseServerConnectionUsername | string | `""` | Connection username for the DAST Server database connection. Required if connection username differs from internal username e.g. if @hostname suffix is mandated (Azure) |
 | database.enterpriseServerPassword | string | `""` | Password for the DAST Server database connection |
 | database.enterpriseServerUsername | string | `""` | Username for the DAST Server database connection |
@@ -37,18 +38,28 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | defaultRequestMemoryPerContainer | string | `"128Mi"` |  |
 | enterpriseServerContainerCpu | string | `"1400m"` |  |
 | enterpriseServerContainerMemory | string | `"4Gi"` |  |
+| gitOps.enabled | bool | `false` | Require all four existingSecret settings to avoid random Secrets during offline rendering. |
 | imagePullSecrets | list | `[]` |  |
+| limitRange.enabled | bool | `true` | Create the LimitRange for the DAST namespace. Set to false where LimitRanges are managed centrally. |
 | maxCpuPerContainer | string | `"4000m"` |  |
 | maxMemoryPerContainer | string | `"8Gi"` |  |
 | minCpuPerContainer | string | `"100m"` |  |
 | minMemoryPerContainer | string | `"128Mi"` |  |
 | persistentVolumeClaim | string | `"bsee-pvc"` | Name of the persistent volume claim used for shared storage between the DAST Pods |
+| podAnnotations | object | `{}` | Annotations added to all DAST deployment Pods. Change a Secret-version annotation to replace Pods after updating a Secret. |
+| podSecurityContext | object | `{"fsGroup":42877,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":42877,"runAsUser":42877}` | Pod-level securityContext for all DAST deployments. Set a field to null to remove it. |
+| relaySharedSecret.existingSecret | string | `""` | Name of an existing Secret containing the keys RELAY_SECRET and BSEE_REQUEST_RELAY_SECRET, both set to the same value. When set, the chart does not create or regenerate the relay shared secret. |
 | scanContainerCpu | string | `"1400m"` |  |
 | scanContainerMemory | string | `"8Gi"` |  |
 | scanControllerCpu | string | `"500m"` |  |
 | scanControllerMemory | string | `"512Mi"` |  |
+| scanner.containerSecurityContext | object | `{}` | Container-level securityContext for scanner Jobs. |
+| scanner.podSecurityContext | object | `{}` | Pod-level securityContext for scanner Jobs. |
+| scanningSharedSecret.existingSecret | string | `""` | Name of an existing Secret containing the key BSEE_HOSTED_SCANNING_MACHINE_API_KEY. When set, the chart does not create or regenerate the scanning shared secret. |
+| services.enterpriseServer.existingSecret | string | `""` | Existing Secret to use instead of the chart-managed DAST server Secret. Must contain BSEE_HTTPS_KEYSTORE_PASSWORD, BSEE_ADMIN_REPOSITORY_* and BSEE_AGENT_REPOSITORY_* (optionally *_CONNECTION_USERNAME). The database.* username/password values are ignored when set. Keystore password: ASCII letters and digits only, at least six characters. |
 | services.enterpriseServer.installationEnvironment | string | `"KUBERNETES"` |  |
 | services.webServer.annotations | object | `{}` | Annotations added to the web-server Service, e.g. cloud load-balancer annotations |
+| services.webServer.existingSecret | string | `""` | Existing Secret to use instead of the chart-managed web server Secret. Must contain BSEE_CLIENT_KEYSTORE_PASSWORD and BSEE_CLIENT_TRUSTSTORE_PASSWORD. Keystore passwords must match and use only ASCII letters and digits (minimum six characters). |
 | services.webServer.httpPort | string | `"8080"` |  |
 | services.webServer.httpsCertificateSecret.key | string | `"certificate"` |  |
 | services.webServer.httpsCertificateSecret.name | string | `"bsee-web-server-https"` |  |
@@ -57,6 +68,7 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | services.webServer.httpsPort | string | `"8443"` |  |
 | services.webServer.installationEnvironment | string | `"KUBERNETES"` |  |
 | services.webServer.label | string | `"app.portswigger.net/ingress: web-server"` |  |
+| services.webServer.strategy | string | `""` | Web-server deployment strategy. Empty retains RollingUpdate; use Recreate for keystore password rotations. |
 | services.webServer.type | string | `""` | Kubernetes Service type for the web-server Service ("ClusterIP", "LoadBalancer" or "NodePort"). Uses the cluster default (ClusterIP) when unset. |
 | services.webServer.useHttps | bool | `false` |  |
 | webServerContainerCpu | string | `"1400m"` |  |

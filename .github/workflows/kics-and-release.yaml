@@ -7,8 +7,30 @@ on:
       - main
     paths:
       - "charts/**"
+      - ".github/workflows/kics-and-release.yaml"
+  pull_request:
+    paths:
+      - "charts/**"
+      - ".github/workflows/kics-and-release.yaml"
 
 jobs:
+  lint-job:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        helm-version: [v3.19.0, v4.3.0]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ matrix.helm-version }}
+      - name: Lint Helm chart
+        run: helm lint charts/helm-chart
+
   kics-job:
     runs-on: ubuntu-latest
     name: kics-github-action
@@ -53,7 +75,8 @@ jobs:
           path: ./reports/
 
   release-job:
-    needs: kics-job
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [kics-job, lint-job]
     permissions:
       contents: write
     runs-on: ubuntu-latest
