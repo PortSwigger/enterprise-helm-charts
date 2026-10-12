@@ -1,4 +1,4 @@
-{{- if .Values.limitRange.enabled }}
+{{- if dig "enabled" true (default dict .Values.limitRange) }}
 apiVersion: v1
 kind: LimitRange
 metadata:

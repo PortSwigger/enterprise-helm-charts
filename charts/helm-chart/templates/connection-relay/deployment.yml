@@ -23,7 +23,7 @@ spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-connection-relay-service-account
       securityContext:
-{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "values" .Values.podSecurityContext) | indent 8 }}
+{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "context" . "field" "podSecurityContext") | indent 8 }}
       containers:
         - name: connection-relay
           image: {{ include "relay-image" . }}
@@ -63,7 +63,7 @@ spec:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite
           securityContext:
-{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "values" .Values.containerSecurityContext) | indent 12 }}
+{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "context" . "field" "containerSecurityContext") | indent 12 }}
       volumes:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:
