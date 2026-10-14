@@ -1,8 +1,8 @@
 # burp-suite-enterprise-edition
 
-![Version: 2026.9.0](https://img.shields.io/badge/Version-2026.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2026.9-30775](https://img.shields.io/badge/AppVersion-2026.9--30775-informational?style=flat-square)
+![Version: 2026.10.1](https://img.shields.io/badge/Version-2026.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2026.10-31570](https://img.shields.io/badge/AppVersion-2026.10--31570-informational?style=flat-square)
 
-A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release notes at https://portswigger.net/burp/releases/dast-2026-9.
+A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release notes at https://portswigger.net/burp/releases/dast-2026-10.
 
 **Homepage:** <https://portswigger.net/>
 
