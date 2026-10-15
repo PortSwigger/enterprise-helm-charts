@@ -22,7 +22,7 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 |-----|------|---------|-------------|
 | applicationName | string | `"bsee"` |  |
 | containerRegistry | string | `"public.ecr.aws"` | The container registry used to get the DAST images |
-| containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsUser":42877}` | Container-level securityContext for DAST deployments and their init containers. |
+| containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsUser":42877}` | Container-level securityContext for DAST deployments and their init containers. Set a field to null to remove it. See podSecurityContext before removing runAsUser. |
 | database.enterpriseServerConnectionUsername | string | `""` | Connection username for the DAST Server database connection. Required if connection username differs from internal username e.g. if @hostname suffix is mandated (Azure) |
 | database.enterpriseServerPassword | string | `""` | Password for the DAST Server database connection |
 | database.enterpriseServerUsername | string | `""` | Username for the DAST Server database connection |
@@ -41,13 +41,13 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | gitOps.enabled | bool | `false` | Require all four existingSecret settings to avoid random Secrets during offline rendering. |
 | imagePullSecrets | list | `[]` |  |
 | limitRange.enabled | bool | `true` | Create the LimitRange for the DAST namespace. Set to false where LimitRanges are managed centrally. |
-| maxCpuPerContainer | string | `"4000m"` |  |
+| maxCpuPerContainer | string | `"4"` |  |
 | maxMemoryPerContainer | string | `"8Gi"` |  |
 | minCpuPerContainer | string | `"100m"` |  |
 | minMemoryPerContainer | string | `"128Mi"` |  |
 | persistentVolumeClaim | string | `"bsee-pvc"` | Name of the persistent volume claim used for shared storage between the DAST Pods |
 | podAnnotations | object | `{}` | Annotations added to all DAST deployment Pods. Change a Secret-version annotation to replace Pods after updating a Secret. |
-| podSecurityContext | object | `{"fsGroup":42877,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":42877,"runAsUser":42877}` | Pod-level securityContext for all DAST deployments. Set a field to null to remove it. |
+| podSecurityContext | object | `{"fsGroup":42877,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":42877,"runAsUser":42877}` | Pod-level securityContext for all DAST deployments. Set a field to null to remove it. Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID. connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user. To remove it, set runAsNonRoot to null here and in containerSecurityContext. |
 | relaySharedSecret.existingSecret | string | `""` | Name of an existing Secret containing the keys RELAY_SECRET and BSEE_REQUEST_RELAY_SECRET, both set to the same value. When set, the chart does not create or regenerate the relay shared secret. |
 | scanContainerCpu | string | `"1400m"` |  |
 | scanContainerMemory | string | `"8Gi"` |  |

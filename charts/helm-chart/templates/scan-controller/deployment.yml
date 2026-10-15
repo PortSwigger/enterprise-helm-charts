@@ -40,7 +40,7 @@ spec:
               cpu: {{ .Values.scanControllerCpu }}
               memory: {{ .Values.scanControllerMemory }}
             limits:
-              cpu: {{ .Values.maxCpuPerContainer }}
+              cpu: {{ .Values.maxCpuPerContainer | quote }}
               memory: {{ .Values.maxMemoryPerContainer }}
           env:
             - name: BSEE_SERVER_URL

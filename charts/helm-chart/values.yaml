@@ -18,12 +18,16 @@ gitOps:
   enabled: false
 
 # -- Pod-level securityContext for all DAST deployments. Set a field to null to remove it.
+# Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID.
+# connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user.
+# To remove it, set runAsNonRoot to null here and in containerSecurityContext.
 podSecurityContext:
   runAsUser: 42877
   runAsGroup: 42877
   fsGroup: 42877
   fsGroupChangePolicy: OnRootMismatch
-# -- Container-level securityContext for DAST deployments and their init containers.
+# -- Container-level securityContext for DAST deployments and their init containers. Set a field to null to remove it.
+# See podSecurityContext before removing runAsUser.
 containerSecurityContext:
   allowPrivilegeEscalation: false
   runAsUser: 42877
@@ -37,7 +41,7 @@ scanner:
   # -- Container-level securityContext for scanner Jobs.
   containerSecurityContext: {}
 
-maxCpuPerContainer: 4000m
+maxCpuPerContainer: "4"
 minCpuPerContainer: 100m
 defaultCpuPerContainer: 100m
 defaultRequestCpuPerContainer: 100m

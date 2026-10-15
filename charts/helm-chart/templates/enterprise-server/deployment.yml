@@ -35,7 +35,7 @@ spec:
               cpu: {{ .Values.enterpriseServerContainerCpu }}
               memory: {{ .Values.enterpriseServerContainerMemory }}
             limits:
-              cpu: {{ .Values.maxCpuPerContainer }}
+              cpu: {{ .Values.maxCpuPerContainer | quote }}
               memory: {{ .Values.maxMemoryPerContainer }}
           env:
             - name: BSEE_INSTALLATION_ENVIRONMENT
