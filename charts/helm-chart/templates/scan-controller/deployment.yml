@@ -21,17 +21,17 @@ spec:
         app.kubernetes.io/name: scan-controller
         app.kubernetes.io/component: server
 {{ include "recommended-labels" . | indent 8 }}
-      annotations:
-        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+{{- $annotations := dict "seccomp.security.alpha.kubernetes.io/defaultProfileName" "runtime/default" -}}
+{{- $scanner := default dict .Values.scanner -}}
+{{- if or $scanner.podSecurityContext $scanner.containerSecurityContext -}}
+{{- $_ := set $annotations "checksum/scanner-job-template" (include "scanner-job-template" . | sha256sum) -}}
+{{- end }}
+{{ include "pod-annotations" (dict "context" . "base" $annotations) | indent 6 }}
     spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-scan-controller-service-account
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 42877
-        runAsGroup: 42877
-        fsGroup: 42877
-        fsGroupChangePolicy: OnRootMismatch
+{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "context" . "field" "podSecurityContext") | indent 8 }}
       containers:
         - name: scan-controller
           image: {{ include "scan-controller-image" . }}
@@ -40,7 +40,7 @@ spec:
               cpu: {{ .Values.scanControllerCpu }}
               memory: {{ .Values.scanControllerMemory }}
             limits:
-              cpu: {{ .Values.maxCpuPerContainer }}
+              cpu: {{ .Values.maxCpuPerContainer | quote }}
               memory: {{ .Values.maxMemoryPerContainer }}
           env:
             - name: BSEE_SERVER_URL
@@ -53,9 +53,9 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-scan-controller-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-scanning-shared-secret
+                name: {{ include "scanning-shared-secret-name" . }}
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-relay-shared-secret
+                name: {{ include "relay-shared-secret-name" . }}
           ports:
             - name: management-api
               containerPort: 8078
@@ -81,12 +81,7 @@ spec:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 42877
-            capabilities:
-              drop:
-                - ALL
+{{ include "security-context" (dict "base" (dict "runAsNonRoot" true) "context" . "field" "containerSecurityContext") | indent 12 }}
       volumes:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:
