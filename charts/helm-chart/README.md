@@ -47,14 +47,14 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | minMemoryPerContainer | string | `"128Mi"` |  |
 | persistentVolumeClaim | string | `"bsee-pvc"` | Name of the persistent volume claim used for shared storage between the DAST Pods |
 | podAnnotations | object | `{}` | Annotations added to all DAST deployment Pods. Change a Secret-version annotation to replace Pods after updating a Secret. |
-| podSecurityContext | object | `{"fsGroup":42877,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":42877,"runAsUser":42877}` | Pod-level securityContext for all DAST deployments. Set a field to null to remove it. Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID. connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user. To remove it, set runAsNonRoot to null here and in containerSecurityContext. |
+| podSecurityContext | object | `{"fsGroup":42877,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":42877,"runAsUser":42877}` | Pod-level securityContext for all DAST deployments. Set a field to null to remove it. Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID. connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user. To remove it, set runAsNonRoot to null here and in containerSecurityContext. Scanner Jobs do not inherit these settings. If you set explicit IDs, set the same IDs under scanner.podSecurityContext. |
 | relaySharedSecret.existingSecret | string | `""` | Name of an existing Secret containing the keys RELAY_SECRET and BSEE_REQUEST_RELAY_SECRET, both set to the same value. When set, the chart does not create or regenerate the relay shared secret. |
 | scanContainerCpu | string | `"1400m"` |  |
 | scanContainerMemory | string | `"8Gi"` |  |
 | scanControllerCpu | string | `"500m"` |  |
 | scanControllerMemory | string | `"512Mi"` |  |
 | scanner.containerSecurityContext | object | `{}` | Container-level securityContext for scanner Jobs. |
-| scanner.podSecurityContext | object | `{}` | Pod-level securityContext for scanner Jobs. |
+| scanner.podSecurityContext | object | `{}` | Pod-level securityContext for scanner Jobs. When empty, scanners run as the image's user, 42877. If podSecurityContext uses explicit IDs, set the same runAsUser, runAsGroup and fsGroup here. Scanners write to the same shared storage as the servers, and a mismatch leaves scans queued without an error. |
 | scanningSharedSecret.existingSecret | string | `""` | Name of an existing Secret containing the key BSEE_HOSTED_SCANNING_MACHINE_API_KEY. When set, the chart does not create or regenerate the scanning shared secret. |
 | services.enterpriseServer.existingSecret | string | `""` | Existing Secret to use instead of the chart-managed DAST server Secret. Must contain BSEE_HTTPS_KEYSTORE_PASSWORD, BSEE_ADMIN_REPOSITORY_* and BSEE_AGENT_REPOSITORY_* (optionally *_CONNECTION_USERNAME). The database.* username/password values are ignored when set. Keystore password: ASCII letters and digits only, at least six characters. |
 | services.enterpriseServer.installationEnvironment | string | `"KUBERNETES"` |  |

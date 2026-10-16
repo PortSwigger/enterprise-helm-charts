@@ -21,6 +21,7 @@ gitOps:
 # Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID.
 # connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user.
 # To remove it, set runAsNonRoot to null here and in containerSecurityContext.
+# Scanner Jobs do not inherit these settings. If you set explicit IDs, set the same IDs under scanner.podSecurityContext.
 podSecurityContext:
   runAsUser: 42877
   runAsGroup: 42877
@@ -36,7 +37,9 @@ containerSecurityContext:
       - ALL
 
 scanner:
-  # -- Pod-level securityContext for scanner Jobs.
+  # -- Pod-level securityContext for scanner Jobs. When empty, scanners run as the image's user, 42877.
+  # If podSecurityContext uses explicit IDs, set the same runAsUser, runAsGroup and fsGroup here.
+  # Scanners write to the same shared storage as the servers, and a mismatch leaves scans queued without an error.
   podSecurityContext: {}
   # -- Container-level securityContext for scanner Jobs.
   containerSecurityContext: {}
