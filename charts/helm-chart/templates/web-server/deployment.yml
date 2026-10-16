@@ -9,9 +9,15 @@ metadata:
 {{ include "recommended-labels" . | indent 4 }}
 spec:
   replicas: 1
-{{- with .Values.services.webServer.strategy }}
   strategy:
-    type: {{ . }}
+{{- if eq (.Values.services.webServer.strategy | default "") "Recreate" }}
+    type: Recreate
+{{- else }}
+{{- /* Explicit Kubernetes defaults let server-side apply remove them when switching to Recreate. */}}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
 {{- end }}
   selector:
     matchLabels:

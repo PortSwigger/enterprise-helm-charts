@@ -68,7 +68,7 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | services.webServer.httpsPort | string | `"8443"` |  |
 | services.webServer.installationEnvironment | string | `"KUBERNETES"` |  |
 | services.webServer.label | string | `"app.portswigger.net/ingress: web-server"` |  |
-| services.webServer.strategy | string | `""` | Web-server deployment strategy. Empty retains RollingUpdate; use Recreate for keystore password rotations. |
+| services.webServer.strategy | string | `""` | Web-server deployment strategy. Empty retains RollingUpdate; use Recreate for keystore password rotations. With Helm 4 server-side apply, upgrade a release installed from chart 2026.10.0 or earlier to this chart before switching to Recreate in a separate upgrade. |
 | services.webServer.type | string | `""` | Kubernetes Service type for the web-server Service ("ClusterIP", "LoadBalancer" or "NodePort"). Uses the cluster default (ClusterIP) when unset. |
 | services.webServer.useHttps | bool | `false` |  |
 | webServerContainerCpu | string | `"1400m"` |  |

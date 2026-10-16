@@ -82,6 +82,7 @@ services:
     # Uses the cluster default (ClusterIP) when unset.
     type: ""
     # -- Web-server deployment strategy. Empty retains RollingUpdate; use Recreate for keystore password rotations.
+    # With Helm 4 server-side apply, upgrade a release installed from chart 2026.10.0 or earlier to this chart before switching to Recreate in a separate upgrade.
     strategy: ""
     # -- Existing Secret to use instead of the chart-managed web server Secret.
     # Must contain BSEE_CLIENT_KEYSTORE_PASSWORD and BSEE_CLIENT_TRUSTSTORE_PASSWORD.
