@@ -1,0 +1,12 @@
+{{- if (default dict .Values.gitOps).enabled -}}
+{{- $secrets := dict
+    "scanningSharedSecret.existingSecret" (default dict .Values.scanningSharedSecret).existingSecret
+    "relaySharedSecret.existingSecret" (default dict .Values.relaySharedSecret).existingSecret
+    "services.enterpriseServer.existingSecret" .Values.services.enterpriseServer.existingSecret
+    "services.webServer.existingSecret" .Values.services.webServer.existingSecret -}}
+{{- range $setting, $name := $secrets -}}
+{{- if not $name -}}
+{{- fail (printf "gitOps.enabled requires %s to prevent Secret regeneration during offline rendering" $setting) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

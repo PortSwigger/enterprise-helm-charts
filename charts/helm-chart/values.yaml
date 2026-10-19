@@ -9,7 +9,42 @@ persistentVolumeClaim: bsee-pvc
 containerRegistry: "public.ecr.aws"
 imagePullSecrets: []
 
-maxCpuPerContainer: 4000m
+# -- Annotations added to all DAST deployment Pods.
+# Change a Secret-version annotation to replace Pods after updating a Secret.
+podAnnotations: {}
+
+gitOps:
+  # -- Require all four existingSecret settings to avoid random Secrets during offline rendering.
+  enabled: false
+
+# -- Pod-level securityContext for all DAST deployments. Set a field to null to remove it.
+# Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID.
+# connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user.
+# To remove it, set runAsNonRoot to null here and in containerSecurityContext.
+# Scanner Jobs do not inherit these settings. If you set explicit IDs, set the same IDs under scanner.podSecurityContext.
+podSecurityContext:
+  runAsUser: 42877
+  runAsGroup: 42877
+  fsGroup: 42877
+  fsGroupChangePolicy: OnRootMismatch
+# -- Container-level securityContext for DAST deployments and their init containers. Set a field to null to remove it.
+# See podSecurityContext before removing runAsUser.
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  runAsUser: 42877
+  capabilities:
+    drop:
+      - ALL
+
+scanner:
+  # -- Pod-level securityContext for scanner Jobs. When empty, scanners run as the image's user, 42877.
+  # If podSecurityContext uses explicit IDs, set the same runAsUser, runAsGroup and fsGroup here.
+  # Scanners write to the same shared storage as the servers, and a mismatch leaves scans queued without an error.
+  podSecurityContext: {}
+  # -- Container-level securityContext for scanner Jobs.
+  containerSecurityContext: {}
+
+maxCpuPerContainer: "4"
 minCpuPerContainer: 100m
 defaultCpuPerContainer: 100m
 defaultRequestCpuPerContainer: 100m
@@ -46,8 +81,34 @@ services:
     # -- Kubernetes Service type for the web-server Service ("ClusterIP", "LoadBalancer" or "NodePort").
     # Uses the cluster default (ClusterIP) when unset.
     type: ""
+    # -- Web-server deployment strategy. Empty retains RollingUpdate; use Recreate for keystore password rotations.
+    # With Helm 4 server-side apply, upgrade a release installed from chart 2026.10.0 or earlier to this chart before switching to Recreate in a separate upgrade.
+    strategy: ""
+    # -- Existing Secret to use instead of the chart-managed web server Secret.
+    # Must contain BSEE_CLIENT_KEYSTORE_PASSWORD and BSEE_CLIENT_TRUSTSTORE_PASSWORD.
+    # Keystore passwords must match and use only ASCII letters and digits (minimum six characters).
+    existingSecret: ""
   enterpriseServer:
     installationEnvironment: KUBERNETES
+    # -- Existing Secret to use instead of the chart-managed DAST server Secret. Must contain
+    # BSEE_HTTPS_KEYSTORE_PASSWORD, BSEE_ADMIN_REPOSITORY_* and BSEE_AGENT_REPOSITORY_* (optionally
+    # *_CONNECTION_USERNAME). The database.* username/password values are ignored when set.
+    # Keystore password: ASCII letters and digits only, at least six characters.
+    existingSecret: ""
+
+scanningSharedSecret:
+  # -- Name of an existing Secret containing the key BSEE_HOSTED_SCANNING_MACHINE_API_KEY.
+  # When set, the chart does not create or regenerate the scanning shared secret.
+  existingSecret: ""
+
+relaySharedSecret:
+  # -- Name of an existing Secret containing the keys RELAY_SECRET and BSEE_REQUEST_RELAY_SECRET, both set to the same value.
+  # When set, the chart does not create or regenerate the relay shared secret.
+  existingSecret: ""
+
+limitRange:
+  # -- Create the LimitRange for the DAST namespace. Set to false where LimitRanges are managed centrally.
+  enabled: true
 
 database:
   # -- JDBC connection URL for the database

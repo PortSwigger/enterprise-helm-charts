@@ -9,6 +9,16 @@ metadata:
 {{ include "recommended-labels" . | indent 4 }}
 spec:
   replicas: 1
+  strategy:
+{{- if eq (.Values.services.webServer.strategy | default "") "Recreate" }}
+    type: Recreate
+{{- else }}
+{{- /* Explicit Kubernetes defaults let server-side apply remove them when switching to Recreate. */}}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+{{- end }}
   selector:
     matchLabels:
       app.portswigger.net/name: {{ include "kebabcase-release-name" . }}-web-server
@@ -20,16 +30,12 @@ spec:
         app.kubernetes.io/component: server
 {{ include "recommended-labels" . | indent 8 }}
 {{ include "ingress-label" . | indent 8 }}
-      annotations:
-        seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+{{ include "pod-annotations" (dict "context" . "base" (dict "seccomp.security.alpha.kubernetes.io/defaultProfileName" "runtime/default")) | indent 6 }}
     spec:
 {{ include "image-pull-secrets" . | indent 6 }}
       serviceAccountName: {{ include "kebabcase-release-name" . }}-web-server-service-account
       securityContext:
-        runAsUser: 42877
-        runAsGroup: 42877
-        fsGroup: 42877
-        fsGroupChangePolicy: OnRootMismatch
+{{ include "security-context" (dict "base" (dict) "context" . "field" "podSecurityContext") | indent 8 }}
       containers:
         - name: web-server
           image: {{ include "web-server-image" . }}
@@ -38,7 +44,7 @@ spec:
               cpu: {{ .Values.webServerContainerCpu }}
               memory: {{ .Values.webServerContainerMemory }}
             limits:
-              cpu: {{ .Values.maxCpuPerContainer }}
+              cpu: {{ .Values.maxCpuPerContainer | quote }}
               memory: {{ .Values.maxMemoryPerContainer }}
           env:
             - name: BSEE_INSTALLATION_ENVIRONMENT
@@ -59,7 +65,7 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+                name: {{ include "web-server-secret-name" . }}
           ports:
             - containerPort: 8080
               name: http
@@ -93,11 +99,7 @@ spec:
               mountPath: /home/burpsuite/certificates
             {{ end }}
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 42877
-            capabilities:
-              drop:
-                - ALL
+{{ include "security-context" (dict "base" (dict) "context" . "field" "containerSecurityContext") | indent 12 }}
       initContainers:
         - name: init-web-server-keystore
           image: {{ include "web-server-image" . }}
@@ -112,24 +114,31 @@ spec:
             - configMapRef:
                 name: {{ include "kebabcase-release-name" . }}-web-server-config
             - secretRef:
-                name: {{ include "kebabcase-release-name" . }}-web-server-secret
+                name: {{ include "web-server-secret-name" . }}
           command:
             - 'sh'
             - '-c'
             - |
+              {{- if .Values.services.webServer.existingSecret }}
+{{ include "validate-keystore-password" "BSEE_CLIENT_KEYSTORE_PASSWORD" | indent 14 }}
+              if [ "$BSEE_CLIENT_KEYSTORE_PASSWORD" != "$BSEE_CLIENT_TRUSTSTORE_PASSWORD" ]; then
+                echo "BSEE_CLIENT_KEYSTORE_PASSWORD and BSEE_CLIENT_TRUSTSTORE_PASSWORD must match." >&2
+                exit 1
+              fi
+              {{- end }}
               mkdir -p /home/burpsuite/keystores &&
               mkdir -p /home/burpsuite/logs &&
               mkdir -p /home/burpsuite/burp &&
+              {{- if .Values.services.webServer.existingSecret }}
+              /usr/local/burpsuite_enterprise/bin/createKeystore webserver "$BSEE_CLIENT_KEYSTORE_LOCATION" "$BSEE_CLIENT_KEYSTORE_PASSWORD"
+              {{- else }}
               /usr/local/burpsuite_enterprise/bin/createKeystore webserver $BSEE_CLIENT_KEYSTORE_LOCATION $BSEE_CLIENT_KEYSTORE_PASSWORD
+              {{- end }}
           volumeMounts:
             - name: {{ include "kebabcase-release-name" . }}-volume
               mountPath: /home/burpsuite
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 42877
-            capabilities:
-              drop:
-                - ALL
+{{ include "security-context" (dict "base" (dict) "context" . "field" "containerSecurityContext") | indent 12 }}
       volumes:
         - name: {{ include "kebabcase-release-name" . }}-volume
           persistentVolumeClaim:
