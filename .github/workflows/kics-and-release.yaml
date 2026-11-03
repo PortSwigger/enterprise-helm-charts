@@ -32,7 +32,7 @@ jobs:
         run: helm lint charts/helm-chart
 
   kics-job:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: kics-github-action
     permissions:
       contents: read
