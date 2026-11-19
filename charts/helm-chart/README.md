@@ -49,7 +49,7 @@ A Helm chart to deploy Burp Suite DAST on a Kubernetes cluster. See the release 
 | podAnnotations | object | `{}` | Annotations added to all DAST deployment Pods. Change a Secret-version annotation to replace Pods after updating a Secret. |
 | podSecurityContext | object | `{"fsGroup":42877,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":42877,"runAsUser":42877}` | Pod-level securityContext for all DAST deployments. Set a field to null to remove it. Only remove runAsUser where the platform assigns a numeric user, such as OpenShift. Elsewhere, set a different numeric ID. connection-relay and scan-controller also set runAsNonRoot: true, which cannot start without a numeric user. To remove it, set runAsNonRoot to null here and in containerSecurityContext. Scanner Jobs do not inherit these settings. If you set explicit IDs, set the same IDs under scanner.podSecurityContext. |
 | relaySharedSecret.existingSecret | string | `""` | Name of an existing Secret containing the keys RELAY_SECRET and BSEE_REQUEST_RELAY_SECRET, both set to the same value. When set, the chart does not create or regenerate the relay shared secret. |
-| scanContainerCpu | string | `"1400m"` |  |
+| scanContainerCpu | string | `"4000m"` |  |
 | scanContainerMemory | string | `"8Gi"` |  |
 | scanControllerCpu | string | `"500m"` |  |
 | scanControllerMemory | string | `"512Mi"` |  |
